@@ -17,12 +17,19 @@ LoginUser(dto: ApiAuthDto){
   const endpoint = ApiQueryService.ApiEndpoint + this.loginEndpotint;
   const response = fetch('http://localhost:7777/api/Login/Login', {
     method: 'POST',
-    headers: {'Content-Type':'application/json'},
+    headers: {'Content-Type':'application/json','Accept': 'application/json'},
     body: JSON.stringify(dto)
   }).then(response=>{
-    console.log(response);
-  }).catch(err=>{
-    console.log(err);
+    if(response.status !== 200){
+      console.log("not logged");
+      throw Error;
+    }
+    response.json().then(resp=>{
+      const key = resp;
+      // set key to local storage as identity
+    })})
+  .catch(err=>{
+    console.log("error:"+err);
   })
 }
 

@@ -7,6 +7,7 @@ const list = [
   { name: "Messages", path: "/messages" },
   { name: "Friends", path: "/friends" },
   { name: "Search", path: "/search" },
+  { name: "Login", path: "/login"},
 ]
 
 const Navigation = () => {

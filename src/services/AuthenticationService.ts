@@ -24,13 +24,15 @@ LoginUser(dto: ApiAuthDto){
       console.log("not logged");
       throw Error;
     }
-    response.json().then(resp=>{
+    return response.json().then(resp=>{
       const key = resp;
+      return key;
       // set key to local storage as identity
     })})
   .catch(err=>{
     console.log("error:"+err);
   })
+  return response;
 }
 
 GetIdentity(apiKey: string){

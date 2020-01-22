@@ -14,7 +14,7 @@ render(){
     
     return(
     <div className="Friends">
-        Friends
+         
     </div>
     )
 }

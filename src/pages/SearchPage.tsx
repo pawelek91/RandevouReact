@@ -3,7 +3,7 @@ import { Redirect } from 'react-router';
 import DictionaryService from '../services/DictionaryService';
 import SearchQueryDto from '../services/dto/SearchQueryDto';
 import DictionaryItemDto from '../services/dto/DictionaryItemDto';
-
+import FieldBasicFieldsComponent from '../components/FinderBasicFieldsComponent';
 class SearchPage extends React.Component{
 
 state={
@@ -111,8 +111,6 @@ render(){
         return <Redirect to='/login'/>
     }
 
-   
-    
     const query = this.state.queryDto;
     
     let eyesColorsFields ;
@@ -152,43 +150,7 @@ render(){
     <div className="Friends">
          <div style={finderStyle}>
 
-            <label htmlFor="userName">Nazwa użytkownika</label>
-            <input type="text" id="name" name="name" value={query.name || ""} onChange={this.onFieldChange} />
-
-            <label htmlFor="region">Województwo</label>
-            <input type="text" id="region" name="region" value={query.region || ""} onChange={this.onFieldChange} />
-
-            <label htmlFor="city">Miasto</label>
-            <input type="text" id="city" name="city" value={query.city || ""} onChange={this.onFieldChange}  />
-
-            <label htmlFor="ageFrom">Wiek od</label>
-            <input type="text" id="agefrom" name="agefrom" value={query.agefrom || ""} onChange={this.onFieldChange}  />
-
-            <label htmlFor="ageTo">Wiek do</label>
-            <input type="text" id="ageto" name="ageto" value={query.ageto || ""} onChange={this.onFieldChange}  />
-
-            <label htmlFor="widthFrom">Wzrost od</label>
-            <input type="text" id="widthfrom" name="widthfrom" value={query.widthfrom || ""} onChange={this.onFieldChange}  />
-
-            <label htmlFor="widthTo">Wzrost do</label>
-            <input type="text" id="widthto" name="widthto"value={query.widthto || ""} onChange={this.onFieldChange}  />
-
-
-            <label htmlFor="heigthFrom">Waga od</label>
-            <input type="text" id="heigthFrom" name="heigthFrom" value={query.heightfrom || ""} onChange={this.onFieldChange}  />
-
-            <label htmlFor="heigthTo">Waga do</label>
-            <input type="text" id="heigthTo" name="heigthTo" value={query.heightto || ""} onChange={this.onFieldChange}  />
-
-            <label htmlFor="gender">Płeć</label>
-            <select id="gender" name="gender">
-            <option value="m">Mężczyzna</option>
-            <option value="f">Kobieta</option>
-            </select>
-
-            <label htmlFor="tattos">Tatuaże</label>
-            <input type="checkbox" id="tatoos" name="tatoos" checked={query.tatoos || false} onChange={this.onFieldChange}  />
-
+          <FieldBasicFieldsComponent query={query} onFieldChange={this.onFieldChange} />
 
              <label htmlFor="eyesColor">Kolor oczu</label>
             <select id="eyesColor" name="eyesColor"  onChange={this.onDictionaryFieldChange}>
@@ -202,7 +164,7 @@ render(){
             </select>
 
 
-            <p> Zainteresowania</p>
+            <p>Zainteresowania</p>
             {interestsIds}
             <button type="submit">Wyszukaj</button>
         </div>

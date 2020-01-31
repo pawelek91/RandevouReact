@@ -41,11 +41,50 @@ onFieldChange = (e) => {
     }
 }
 
+onDictionaryFieldChange = (e) =>{
+    if(e.target.name === "eyesColor"){
+        this.setState({
+            queryDto: {
+                ...this.state.queryDto,
+                eyescolor: e.target.value,
+        }})
+    }
+    else if(e.target.name === "hairColor"){
+        this.setState({
+            queryDto: {
+                ...this.state.queryDto,
+                haircolor: e.target.value,
+        }})
+    }
+
+    else{
+        let selectedItems = this.state.queryDto.interestids ?? [];
+        
+        if(e.target.checked && !selectedItems?.find(x=> x == e.target.name) ){
+            selectedItems.push(e.target.name*1);
+
+        }
+
+        if(!e.target.checked && selectedItems?.find(x=> x == e.target.name) ){
+            selectedItems=selectedItems.filter(x=> x != e.target.name);
+            }
+
+        this.setState({
+            queryDto:{
+            ...this.state.queryDto,
+            interestids: selectedItems,
+        }})
+    }
+
+   
+}
+
 componentDidMount(){
      this.dictionaryService.GetAllInterest().then(result=>{
         this.setState({
-            intrests:result,
+            interests:result,
         });
+  
     });
     
     this.dictionaryService.GetAllEyesColors().then(result=>{
@@ -61,7 +100,7 @@ componentDidMount(){
     })
 }
 render(){
-    console.log(this.state.queryDto);
+         
     const finderStyle={
         display: 'inline-grid',
     }
@@ -94,9 +133,20 @@ render(){
         );
     }
 
+    let interestsIds;
+    if(this.state.interests.length >0){
+        interestsIds = this.state.interests.map(item=>
+            (
+                <label key={item.name}>
+                    <input type="checkbox" key={item.name} name={item.id+''} onChange={this.onDictionaryFieldChange}  /> 
+                    {item.displayName}
+                </label>
+            )
+        )
+    }
 
-    
-    console.log("render");
+
+
     return(
         
     <div className="Friends">
@@ -141,26 +191,19 @@ render(){
 
 
              <label htmlFor="eyesColor">Kolor oczu</label>
-            <select id="eyesColor" name="eyesColor">
+            <select id="eyesColor" name="eyesColor"  onChange={this.onDictionaryFieldChange}>
             {eyesColorsFields}
             </select>
 
 
             <label htmlFor="hairColor">Kolor włosów</label>
-            <select  id="hairHolor" name="hairColor">
+            <select  id="hairHolor" name="hairColor" onChange={this.onDictionaryFieldChange}>
             {hairColorsFields}
             </select>
 
-{/*
-            <label htmlFor="interest">Zainteresowania</label>
-            <ul>
-                <li>
-                    <label>
-                    <input name="selected" type="checkbox">
-                    {{interestDictionary[i].displayName}}
-                </li>
-            </ul> */}
 
+            <p> Zainteresowania</p>
+            {interestsIds}
             <button type="submit">Wyszukaj</button>
         </div>
     </div>

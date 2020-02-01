@@ -32,7 +32,7 @@ const FinderBasicFieldsComponent = (props) => {
             <input type="text" id="heigthTo" name="heigthTo" value={query.heightto || ""} onChange={onFieldChange}  />
 
             <label htmlFor="gender">Płeć</label>
-            <select id="gender" name="gender">
+            <select id="gender" name="gender" onChange={onFieldChange}>
             <option value="m">Mężczyzna</option>
             <option value="f">Kobieta</option>
             </select>

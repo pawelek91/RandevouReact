@@ -26,7 +26,6 @@ onFieldChange = (e) => {
     const checked = e.target.checked;
     const name=e.target.name;
     const type=e.target.type;
-
     if(type === "checkbox"){
         this.setState({
             queryDto: {
@@ -34,8 +33,7 @@ onFieldChange = (e) => {
             [name]:checked
         }})
     }
-    else if(type==="text"){
-        
+    else {
         this.setState({
             
             queryDto: {
@@ -85,14 +83,11 @@ onDictionaryFieldChange = (e) =>{
 }
 
 searchUsers = () =>{
-    console.log(this.state.queryDto);
      this.searchService.searchUsers(this.state.queryDto).then(res=>{
          if(res !== undefined){
-             console.log("result");
              this.setState({
                 searchResult: res
              });
-             console.log(res);
          }
      })
 }
@@ -122,7 +117,12 @@ render(){
          
     const finderStyle={
         display: 'inline-grid',
+        width:'35%',
+        margin:'10px',
+ 
     }
+
+ 
 
     const apiKey = localStorage.getItem('apiKey');
   
@@ -163,15 +163,13 @@ render(){
     }
 
     const searchResponse = this.state.searchResult.length > 0 ? this.state.searchResult : null;
-    console.log("searchResponse");
-    console.log(searchResponse);
 
     
 
 
     return(
         
-    <div className="Friends">
+    <div className="finder" >
          <div style={finderStyle}>
 
           <FieldBasicFieldsComponent query={query} onFieldChange={this.onFieldChange} />
@@ -192,8 +190,9 @@ render(){
             {interestsIds}
             <button type="submit" onClick={this.searchUsers}>Wyszukaj</button>
         </div>
-        <hr/>
+        <div>
         {searchResponse != null && <SearchResultComponent users={searchResponse}></SearchResultComponent>}
+        </div>
     </div>
     )
 }

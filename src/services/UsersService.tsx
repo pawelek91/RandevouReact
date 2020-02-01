@@ -1,7 +1,7 @@
 import { ApiQueryService } from "./ApiQueryService";
-import { UserDto } from "./dto/UsersDto";
+import { UserDto, UserDetailsDto } from "./dto/UsersDto";
 
-export class UsersService{
+export class UsersService extends ApiQueryService{
 
   usersEnd = ApiQueryService.ApiEndpoint + '/api/Users';
   getAllUsersEnd = this.usersEnd;
@@ -34,5 +34,26 @@ export class UsersService{
             return result as UserDto[]
           }
     )})
+    }
+
+    getUserDetais(id:number){
+        let apiKey = localStorage.getItem('apiKey');
+        if(apiKey === null)
+            apiKey ='';
+        
+        const endpoint = this.BuildAddress(this.getUserDetailsEnd,id);
+        const header = new Headers();
+        header.append('Content-Type','application/json');
+        header.append('Authorization',apiKey);
+        return fetch(endpoint, {
+            method:'Get',
+            headers: header,
+        }).then(res=>{
+            return res.json().then(result=> {
+                return result as UserDetailsDto;
+            })
+        })
+
+        
     }
 }

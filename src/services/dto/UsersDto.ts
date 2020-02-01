@@ -17,7 +17,7 @@ export interface UserCreateDto {
   
   
   
-  export interface UsersDetailsDto {
+  export interface UserDetailsDto {
     id?: number;
     width?: number;
     heigth?: number;
@@ -40,7 +40,7 @@ export interface UserCreateDto {
   
   export interface UserFullDto {
     basic: UserDto;
-    details: UsersDetailsDto;
+    details: UserDetailsDto;
   }
   
   export interface UserAvatarDto {

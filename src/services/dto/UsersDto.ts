@@ -18,7 +18,7 @@ export interface UserCreateDto {
   
   
   export interface UserDetailsDto {
-    id?: number;
+    userId?: number;
     width?: number;
     heigth?: number;
     region?: string;

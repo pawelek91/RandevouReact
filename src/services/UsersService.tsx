@@ -42,6 +42,7 @@ export class UsersService extends ApiQueryService{
             apiKey ='';
         
         const endpoint = this.BuildAddress(this.getUserDetailsEnd,id);
+        console.log(endpoint);
         const header = new Headers();
         header.append('Content-Type','application/json');
         header.append('Authorization',apiKey);

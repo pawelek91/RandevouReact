@@ -1,8 +1,7 @@
 import React, { Props } from 'react';
 import { UsersService } from '../services/UsersService';
 import {UserDetailsDto} from '../services/dto/UsersDto';
-import { render } from '@testing-library/react';
-
+import {UserDetailsComponent} from '../components/UserDetailsComponent';
 export default class  UserDetailsPage extends React.Component{
     
     constructor(props) {
@@ -17,23 +16,31 @@ export default class  UserDetailsPage extends React.Component{
         userId: 0,
         userDto:{},
     }
-    
 
-    render(){
+    componentDidMount(){
         const userId = this.state.userId;
         const usersService = new UsersService();
   
     usersService.getUserDetais(userId).then(result=>{
+        console.log(result);
         this.setState({
             userDto: result
         })
     });
+    }
+    
 
+    render(){
+       
+    
     const {userDto} = this.state
     if(userDto !== undefined){
         console.log("something");
         const dto = userDto as UserDetailsDto;
-        console.log(dto.id);
+
+        return(
+            <UserDetailsComponent user={dto} /> // get full user details DTO
+        )
     }
 
     return(

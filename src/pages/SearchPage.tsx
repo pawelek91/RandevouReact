@@ -1,9 +1,13 @@
+/* eslint-disable eqeqeq */
 import React from 'react';
 import { Redirect } from 'react-router';
 import DictionaryService from '../services/DictionaryService';
 import SearchQueryDto from '../services/dto/SearchQueryDto';
 import DictionaryItemDto from '../services/dto/DictionaryItemDto';
 import FieldBasicFieldsComponent from '../components/FinderBasicFieldsComponent';
+import { SearchUsersService } from '../services/SearchUsersService';
+import { UserDto } from '../services/dto/UsersDto';
+import SearchResultComponent from '../components/SearchResultComponent';
 class SearchPage extends React.Component{
 
 state={
@@ -11,9 +15,11 @@ state={
     interests : new Array<DictionaryItemDto>(),
     eyesColors: new Array<DictionaryItemDto>(),
     hairColors: new Array<DictionaryItemDto>(),
+    searchResult: new Array<UserDto>(),
 }
 
 dictionaryService = new DictionaryService();
+searchService = new SearchUsersService();
 
 onFieldChange = (e) => {
     const value = e.target.value;
@@ -75,9 +81,22 @@ onDictionaryFieldChange = (e) =>{
             interestids: selectedItems,
         }})
     }
-
    
 }
+
+searchUsers = () =>{
+    console.log(this.state.queryDto);
+     this.searchService.searchUsers(this.state.queryDto).then(res=>{
+         if(res !== undefined){
+             console.log("result");
+             this.setState({
+                searchResult: res
+             });
+             console.log(res);
+         }
+     })
+}
+
 
 componentDidMount(){
      this.dictionaryService.GetAllInterest().then(result=>{
@@ -143,6 +162,11 @@ render(){
         )
     }
 
+    const searchResponse = this.state.searchResult.length > 0 ? this.state.searchResult : null;
+    console.log("searchResponse");
+    console.log(searchResponse);
+
+    
 
 
     return(
@@ -166,8 +190,10 @@ render(){
 
             <p>Zainteresowania</p>
             {interestsIds}
-            <button type="submit">Wyszukaj</button>
+            <button type="submit" onClick={this.searchUsers}>Wyszukaj</button>
         </div>
+        <hr/>
+        {searchResponse != null && <SearchResultComponent users={searchResponse}></SearchResultComponent>}
     </div>
     )
 }

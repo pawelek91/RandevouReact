@@ -21,12 +21,15 @@ export class SearchUsersService{
         }).then(result=>{
             return result.json()
         }).then(result=>{
+            
             let ids = result as Array<Number>;
+            if(ids === null || ids==undefined){
+                throw Error;
+            }
+
             if(ids.length >0){
                 const usersService = new UsersService();
                 return usersService.getManyUsers(ids);
-            }else{
-                throw Error;
             }
             
         }).catch(err=>{

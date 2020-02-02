@@ -42,7 +42,6 @@ export class UsersService extends ApiQueryService{
             apiKey ='';
         
         const endpoint = this.BuildAddress(this.getUserDetailsEnd,id);
-        console.log(endpoint);
         const header = new Headers();
         header.append('Content-Type','application/json');
         header.append('Authorization',apiKey);
@@ -50,11 +49,40 @@ export class UsersService extends ApiQueryService{
             method:'Get',
             headers: header,
         }).then(res=>{
+            if(!res.ok || res.status === 204){
+                throw Error('Nie udałosię pobrać użyszkodnika');
+            }
             return res.json().then(result=> {
                 return result as UserDetailsDto;
             })
+        }).catch(err=>{
+            console.log(err);
+        })
+    }
+
+    getUserBasic(id:number){
+        let apiKey = localStorage.getItem('apiKey');
+        if(apiKey === null)
+            apiKey ='';
+        
+        const endpoint = this.BuildAddress(this.getUserEnd,id);
+        const header = new Headers();
+        header.append('Content-Type','application/json');
+        header.append('Authorization',apiKey);
+        return fetch(endpoint, {
+            method:'Get',
+            headers: header,
+        }).then(res=>{
+            if(!res.ok || res.status === 204){
+                
+                throw Error('Nie udało się pobrać użyszkodnika');
+            }
+            return res.json().then(result=> {
+                return result as UserDto;
+            })
+        }).catch(err=>{
+            console.log(err);
         })
 
-        
     }
 }

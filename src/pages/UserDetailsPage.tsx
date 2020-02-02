@@ -1,6 +1,6 @@
 import React, { Props } from 'react';
 import { UsersService } from '../services/UsersService';
-import {UserDetailsDto} from '../services/dto/UsersDto';
+import {UserDetailsDto, UserDto, UserFullDto} from '../services/dto/UsersDto';
 import {UserDetailsComponent} from '../components/UserDetailsComponent';
 export default class  UserDetailsPage extends React.Component{
     
@@ -8,13 +8,15 @@ export default class  UserDetailsPage extends React.Component{
         super(props);
         this.state={
             userId: props.match.params.id,
-            userDto: {}
+            userDto: {},
+            userDetailsDto: {}
         }
     }
 
     state={
         userId: 0,
         userDto:{},
+        userDetailsDto: {}
     }
 
     componentDidMount(){
@@ -22,24 +24,31 @@ export default class  UserDetailsPage extends React.Component{
         const usersService = new UsersService();
   
     usersService.getUserDetais(userId).then(result=>{
-        console.log(result);
         this.setState({
-            userDto: result
+            userDetailsDto: result
         })
     });
+
+    usersService.getUserBasic(userId).then(result=>{
+        this.setState({
+            userDto: result
+        })        
+    })
     }
     
 
     render(){
        
     
-    const {userDto} = this.state
-    if(userDto !== undefined){
-        console.log("something");
-        const dto = userDto as UserDetailsDto;
+    const {userDto, userDetailsDto} = this.state
+    if(userDto !== undefined && userDetailsDto !==undefined){
+
+        const detailsDto = userDetailsDto as UserDetailsDto;
+        const userBasicDto = userDto as UserDto;
+        const userFullDto : UserFullDto ={ basic: userBasicDto, details: detailsDto };
 
         return(
-            <UserDetailsComponent user={dto} /> // get full user details DTO
+            <UserDetailsComponent user={userFullDto} /> // get full user details DTO
         )
     }
 

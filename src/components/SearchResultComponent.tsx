@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { UserDto } from '../services/dto/UsersDto';
+import {Link} from 'react-router-dom';
 
 interface ISearchComponentProps{
     users : UserDto[]
@@ -21,7 +22,7 @@ export class SearchResultComponent extends Component<ISearchComponentProps>  {
         }
 
         const users = this.props.users as UserDto[];
-    const usersList = users.map(user=>{
+        const usersList = users.map(user=>{
        
        let gender = '';
        switch(user.gender){
@@ -31,11 +32,14 @@ export class SearchResultComponent extends Component<ISearchComponentProps>  {
 
        let birthDate = '';
        birthDate = user.birthDate?.slice(0,10) ?? '';
+
+       const userDetailsLink = `/user/${user.id}`;
         return (
         <div key={user.id} style={userStyle}>
             Użytkownik {user.displayName} <br/>
             Płeć {gender} <br/>
             Wiek {this.calculateAge(Date.parse(birthDate))} <br/>
+            <Link to={userDetailsLink}>Go</Link>
         </div>
         
         );

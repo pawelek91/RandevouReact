@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Component } from "react";
 import { UserFullDto } from '../services/dto/UsersDto';
 import InterestDisplayComponent from '../components/InterestsDisplayComponent';
+import { UserComponent } from './UserComponent';
 interface IUserDetailsComponent{
     user: UserFullDto
 }
@@ -11,20 +12,9 @@ export class UserDetailsComponent extends Component<IUserDetailsComponent>{
         const userInterest = userDto.details?.interests as Number[];
     return(
         <>
+        <UserComponent user={userDto.basic} />
         <table >
             <tbody>
-                <tr>
-                    <th>Nazwa użytkownika</th>
-                    <td>{userDto.basic?.displayName}</td>
-                </tr>
-                <tr>
-                    <th>Data urodzin</th>
-                    <td>{userDto.basic?.birthDate}</td>
-                </tr>
-                <tr>
-                    <th>Płeć</th>
-                    <td>{userDto.basic?.gender}</td>
-                </tr>
                 <tr>
                     <th>Miasto</th>
                     <td>{userDto.details?.city}</td>

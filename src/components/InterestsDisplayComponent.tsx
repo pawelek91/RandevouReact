@@ -50,11 +50,10 @@ componentDidMount(){
     }
     render(){
         
-        console.log("Display interests");
     
     if(this.state.dataFilled && this.state.userInterests !==null){
         const dictionaryItem = this.state.userInterests.map(x=>{
-            return <li>{x.displayName}</li>
+            return <li key={x.id}>{x.displayName}</li>
         })
      
     return ( 

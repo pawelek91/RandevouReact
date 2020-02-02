@@ -6,6 +6,9 @@ import {Link} from 'react-router-dom';
 interface IUserCoomponent{
     user:UserDto
 }
+
+
+
 export class UserComponent extends Component<IUserCoomponent>{
 
     calculateAge = (birthday) => { // birthday is a date
@@ -15,13 +18,12 @@ export class UserComponent extends Component<IUserCoomponent>{
       }
 
     render(){
-        const userStyle={
-            border: '1px solid gray',
+     
    
-        }
+        
 
         const user = this.props.user;
-        const userDetailsLink = `/user/${user.id}`;
+        
         let birthDate = '';
         birthDate = user.birthDate?.slice(0,10) ?? '';
         let gender = '';
@@ -33,14 +35,26 @@ export class UserComponent extends Component<IUserCoomponent>{
 
         return(
             <>
-             <div key={user.id} style={userStyle}>
+             <div key={user.id} >
             Użytkownik {user.displayName} <br/>
             Płeć {gender} <br/>
             Wiek {this.calculateAge(Date.parse(birthDate))} <br/>
-            <Link to={userDetailsLink}>Go</Link>
         </div>
             </>
         )
     }
 
 }
+
+const UserWithLink = (props) =>{
+    const userDetailsLink = `/user/${props.user.id}`;
+    return(
+        <>
+        <UserComponent user={props.user} />
+        <Link to={userDetailsLink}>Go</Link>
+        </>
+    )
+}
+
+export default UserWithLink;
+

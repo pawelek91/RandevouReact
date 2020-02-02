@@ -1,8 +1,10 @@
 import React from 'react';
 import {ApiAuthDto} from '../services/dto/ApiAuthDto'
 import AuthenticationService from '../services/AuthenticationService';
+import { ApiQueryService } from '../services/ApiQueryService';
 class LoginPage extends React.Component{
 
+    apiQueryService = new ApiQueryService();
     state = {
         login: "",
         password:"",
@@ -21,10 +23,18 @@ class LoginPage extends React.Component{
                 })
             }
             else{ //logged in
-            localStorage.setItem('apiKey', response);
+            localStorage.setItem('RANDEVOU_APIKEY', response);
+            console.log('login:');
+            console.log(response);
             this.setState({
                 apiKey: response
             });
+
+            authService.GetIdentity(response).then(result=>{
+                console.log("identity");
+                console.log(result);
+                localStorage.setItem('RANDEVOU_IDENTITY',result.toString());
+            })
         }
         });
         
@@ -34,7 +44,7 @@ class LoginPage extends React.Component{
         this.setState({
             apiKey:""
         });
-        localStorage.removeItem('apiKey');
+        ApiQueryService.ClearLoginInfos();
     }
 
     handleFieldChanged = (e : any) =>{
@@ -45,7 +55,7 @@ class LoginPage extends React.Component{
 
 
     render(){
-        const apiKey = localStorage.getItem('apiKey');
+        const apiKey = this.apiQueryService.GetApiKey();
         const loggedFailedInfo = this.state.authFailed && <p>Nie udało się zalogować</p>;
 
         if(apiKey !== undefined && apiKey !==null){

@@ -2,8 +2,11 @@ import React, { Props } from 'react';
 import { UsersService } from '../services/UsersService';
 import {UserDetailsDto, UserDto, UserFullDto} from '../services/dto/UsersDto';
 import {UserDetailsComponent} from '../components/UserDetailsComponent';
+import { Redirect } from 'react-router';
 export default class  UserDetailsPage extends React.Component{
     
+    usersService = new UsersService();
+
     constructor(props) {
         super(props);
         this.state={
@@ -21,15 +24,14 @@ export default class  UserDetailsPage extends React.Component{
 
     componentDidMount(){
         const userId = this.state.userId;
-        const usersService = new UsersService();
   
-    usersService.getUserDetais(userId).then(result=>{
+    this.usersService.getUserDetais(userId).then(result=>{
         this.setState({
             userDetailsDto: result
         })
     });
 
-    usersService.getUserBasic(userId).then(result=>{
+    this.usersService.getUserBasic(userId).then(result=>{
         this.setState({
             userDto: result
         })        
@@ -38,7 +40,12 @@ export default class  UserDetailsPage extends React.Component{
     
 
     render(){
-       
+        const apiKey = this.usersService.GetApiKey();
+  
+        if(apiKey === undefined || apiKey === null || apiKey===''){
+            return <Redirect to='/login'/>
+        }
+    
     
     const {userDto, userDetailsDto} = this.state
     if(userDto !== undefined && userDetailsDto !==undefined){

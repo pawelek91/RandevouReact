@@ -3,7 +3,7 @@ import SearchQueryDto from './dto/SearchQueryDto';
 import { UsersService } from './UsersService';
 import { UserDto } from './dto/UsersDto';
 
-export class SearchUsersService{
+export class SearchUsersService extends ApiQueryService{
     postUserFindEnd  =  ApiQueryService.ApiEndpoint + '/api/UserFinder';
 
     searchUsers(dto: SearchQueryDto){

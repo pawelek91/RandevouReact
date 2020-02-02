@@ -15,7 +15,7 @@ RegisterUser(dto: RegisterDto){
 
 LoginUser(dto: ApiAuthDto){
   const endpoint = ApiQueryService.ApiEndpoint + this.loginEndpotint;
-  const response = fetch('http://localhost:7777/api/Login/Login', {
+  const response = fetch(endpoint, {
     method: 'POST',
     headers: {'Content-Type':'application/json','Accept': 'application/json'},
     body: JSON.stringify(dto)
@@ -37,6 +37,17 @@ LoginUser(dto: ApiAuthDto){
 
 GetIdentity(apiKey: string){
   const endpoint = ApiQueryService.ApiEndpoint + this.identityEndpoint;
+  return fetch(endpoint, {
+    method: 'GET',
+    headers: {'Content-Type':'application/json','Accept': 'application/json', 'Authorization':apiKey},
+  }).then(result=>{
+    console.log('serbice get identity');
+    console.log(result);
+    return result.json().then(res=>{
+      return res as Number;
+    })
+  })
+
 }
 
 }

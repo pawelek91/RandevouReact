@@ -25,4 +25,10 @@ export class ApiQueryService{
         return apiKey;
       }
 
+      static ClearLoginInfos() {
+        localStorage.removeItem('RANDEVOU_IDENTITY');
+        localStorage.removeItem('RANDEVOU_APIKEY');
+      }
+    
+
 }

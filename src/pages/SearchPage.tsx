@@ -124,7 +124,7 @@ render(){
 
  
 
-    const apiKey = localStorage.getItem('apiKey');
+    const apiKey = this.searchService.GetApiKey();
   
     if(apiKey === undefined || apiKey === null || apiKey===''){
         return <Redirect to='/login'/>

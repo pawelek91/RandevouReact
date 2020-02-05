@@ -29,5 +29,49 @@ export default class FriendshipService extends ApiQueryService{
         })
         
         }
+
+        GetFriendshipsRequestsList(){
+            const identity = this.GetIdentity();
+            const endpoint =  this.BuildAddress(this.GetFriendshipisRequestsEnd, +identity);
+            
+            let apiKey =  this.GetApiKey();
+            if(apiKey === null)
+                apiKey ='';
+    
+            const header = new Headers();
+            header.append('Content-Type','application/json');
+            header.append('Authorization',apiKey);
+            return fetch(endpoint,{method:'Get',headers: header})
+            .then(result=> {
+                return result.json().then(res=>{
+                    return res as Number[];
+                })
+            })
+        }
+
+        GetFriendshipStatus(user1Id: number, user2Id: number) {
+            let endpoint = this.BuildAddress(this.GetFriendshipStatusNend, user1Id);
+            endpoint += user2Id;
+             
+            let apiKey =  this.GetApiKey();
+            if(apiKey === null)
+                apiKey ='';
+    
+            const header = new Headers();
+            header.append('Content-Type','application/json');
+            header.append('Authorization',apiKey);
+            return fetch(endpoint,{method:'Get',headers: header})
+            .then(result=> {
+                return result.json().then(res=>{
+                    return res as string;
+                })
+            })
+          }
+
+        AreFriends(user1Id:number, user2Id:number){
+            return this.GetFriendshipStatus(user1Id,user2Id).then(result=>{
+                return result.toLowerCase() === 'none';
+            })
+        }
       }
     

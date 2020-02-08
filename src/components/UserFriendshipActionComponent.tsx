@@ -32,7 +32,7 @@ export class UserFriendshipActionComponent extends React.Component<IUserFriendsh
     }
 
     removeFriend = (userId:number) =>{
-        console.log(userId);
+        this.friendshipService.RemoveFriend(userId);
     }
 
     addToFriends = (userId:number) =>{
@@ -50,13 +50,21 @@ export class UserFriendshipActionComponent extends React.Component<IUserFriendsh
         switch(friendshipStatus.toLocaleLowerCase())
         {
             case 'friends':
-                friendButton = <button key={userId}  onClick={()=>this.removeFriend(userId)}>Remove from friends</button>;
+                friendButton = (<button key={userId}  onClick={()=>this.removeFriend(userId)}>Remove from friends</button>);
                 break;
             case 'invited':
-                friendButton = <button  key={userId} onClick={()=>this.acceptFriendship(userId)}>Accept</button>;
+                friendButton = (<>
+                <button  key={userId} onClick={()=>this.acceptFriendship(userId)}>Accept</button>
+                <button key={userId}  onClick={()=>this.removeFriend(userId)}>Remove from friends</button>
+                </>);
                 break;
             case 'created':
-                friendButton= <p>Invitation to friends has been sent</p>;
+                friendButton=(<>
+                 <p>Invitation to friends has been sent</p>
+                 <button key={userId}  onClick={()=>this.removeFriend(userId)}>Remove from friends</button>
+                 </>
+
+                )
                 break;
             case 'none':
             friendButton = <button  key={userId} onClick={()=>this.addToFriends(userId)}>Add to friends</button>;

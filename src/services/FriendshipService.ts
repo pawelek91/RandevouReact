@@ -111,10 +111,10 @@ export default class FriendshipService extends ApiQueryService{
             let endpoint = this.BuildAddress(this.SetFriendshipStatusEnd, loggedUserId);
             console.log(endpoint);
             const header = new Headers();
-
-            const dto : UpdateFriendshipStatusDto = { toUserId:userId, fromUserId : loggedUserId, action: 'Accept' }
             header.append('Content-Type','application/json');
             header.append('Authorization',apiKey);
+            const dto : UpdateFriendshipStatusDto = { toUserId:userId, fromUserId : loggedUserId, action: 'Accept' }
+           
 
             return fetch(endpoint,{method:'Put',headers: header, body: JSON.stringify(dto)}).then(res=>
                 {
@@ -124,6 +124,27 @@ export default class FriendshipService extends ApiQueryService{
                     }
                 })
 
+        }
+
+        RemoveFriend(userId:number){
+            let apiKey =  this.GetApiKey();
+            if(apiKey === null)
+                apiKey ='';
+    
+            const loggedUserId = +this.GetIdentity();
+            let endpoint = this.BuildAddress(this.SetFriendshipStatusEnd, loggedUserId);
+
+            const dto : UpdateFriendshipStatusDto = {fromUserId:loggedUserId, toUserId: userId, action: 'Delete'};
+            const header = new Headers();
+            header.append('Content-Type','application/json');
+            header.append('Authorization',apiKey);
+            return fetch(endpoint,{method:'Put',headers: header, body: JSON.stringify(dto)}).then(res=>
+                {
+                    if(!res.ok){
+                        console.log("Nie udało się  usunąć znajomości");
+                        console.log(res.json());
+                    }
+                })
         }
       }
     

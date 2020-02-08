@@ -1,4 +1,5 @@
 import {ApiQueryService} from "./ApiQueryService";
+import { FriendhsipSendRequestDto, UpdateFriendshipStatusDto } from "./dto/FriendshipRequestDto";
 
 export default class FriendshipService extends ApiQueryService{
 
@@ -41,12 +42,35 @@ export default class FriendshipService extends ApiQueryService{
             const header = new Headers();
             header.append('Content-Type','application/json');
             header.append('Authorization',apiKey);
+            
             return fetch(endpoint,{method:'Get',headers: header})
             .then(result=> {
                 return result.json().then(res=>{
                     return res as Number[];
                 })
             })
+        }
+
+        SendInvitation(userId:number){
+            let apiKey =  this.GetApiKey();
+            if(apiKey === null)
+                apiKey ='';
+
+            const loggedUserId = +this.GetIdentity();
+            const endpoint = this.SendInvitationEnd;
+            const dto :  FriendhsipSendRequestDto = { fromUserId :loggedUserId,toUserId: userId };
+
+            const header = new Headers();
+            header.append('Content-Type','application/json');
+            header.append('Authorization',apiKey);
+            
+            return fetch(endpoint,{method:'Put',headers: header, body: JSON.stringify(dto)}).then(res=>
+                {
+                    if(!res.ok){
+                        console.log("Nie udało się wysłać zaproszenia");
+                        console.log(res.json());
+                    }
+                })
         }
 
         GetFriendshipStatus(user1Id: number, user2Id: number) {
@@ -60,9 +84,13 @@ export default class FriendshipService extends ApiQueryService{
             const header = new Headers();
             header.append('Content-Type','application/json');
             header.append('Authorization',apiKey);
+            header.append('Accept', 'application/json');
             return fetch(endpoint,{method:'Get',headers: header})
             .then(result=> {
                 return result.json().then(res=>{
+                    console.log(user1Id);
+                    console.log(user2Id);
+                    console.log(res);
                     return res as string;
                 })
             })
@@ -72,6 +100,30 @@ export default class FriendshipService extends ApiQueryService{
             return this.GetFriendshipStatus(user1Id,user2Id).then(result=>{
                 return result.toLowerCase() === 'none';
             })
+        }
+
+        AcceptFriendship(userId:number){
+            let apiKey =  this.GetApiKey();
+            if(apiKey === null)
+                apiKey ='';
+    
+            const loggedUserId = +this.GetIdentity();
+            let endpoint = this.BuildAddress(this.SetFriendshipStatusEnd, loggedUserId);
+            console.log(endpoint);
+            const header = new Headers();
+
+            const dto : UpdateFriendshipStatusDto = { toUserId:userId, fromUserId : loggedUserId, action: 'Accept' }
+            header.append('Content-Type','application/json');
+            header.append('Authorization',apiKey);
+
+            return fetch(endpoint,{method:'Put',headers: header, body: JSON.stringify(dto)}).then(res=>
+                {
+                    if(!res.ok){
+                        console.log("Nie udało się zaakceptować zaproszenia");
+                        console.log(res.json());
+                    }
+                })
+
         }
       }
     

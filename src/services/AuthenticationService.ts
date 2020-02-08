@@ -27,7 +27,6 @@ LoginUser(dto: ApiAuthDto){
     return response.json().then(resp=>{
       const key = resp;
       return key;
-      // set key to local storage as identity
     })})
   .catch(err=>{
     console.log("error:"+err);
@@ -41,8 +40,6 @@ GetIdentity(apiKey: string){
     method: 'GET',
     headers: {'Content-Type':'application/json','Accept': 'application/json', 'Authorization':apiKey},
   }).then(result=>{
-    console.log('serbice get identity');
-    console.log(result);
     return result.json().then(res=>{
       return res as Number;
     })

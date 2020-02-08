@@ -9,7 +9,7 @@ import { SearchUsersService } from '../services/SearchUsersService';
 import { UserDto } from '../services/dto/UsersDto';
 import SearchResultComponent from '../components/SearchResultComponent';
 class SearchPage extends React.Component{
-
+ _isMounted = false;
 state={
     queryDto: new SearchQueryDto(),
     interests : new Array<DictionaryItemDto>(),
@@ -27,6 +27,7 @@ onFieldChange = (e) => {
     const name=e.target.name;
     const type=e.target.type;
     if(type === "checkbox"){
+        if(this._isMounted)
         this.setState({
             queryDto: {
                 ...this.state.queryDto,
@@ -34,6 +35,7 @@ onFieldChange = (e) => {
         }})
     }
     else {
+        if(this._isMounted)
         this.setState({
             
             queryDto: {
@@ -47,6 +49,7 @@ onFieldChange = (e) => {
 
 onDictionaryFieldChange = (e) =>{
     if(e.target.name === "eyesColor"){
+        if(this._isMounted)
         this.setState({
             queryDto: {
                 ...this.state.queryDto,
@@ -54,6 +57,7 @@ onDictionaryFieldChange = (e) =>{
         }})
     }
     else if(e.target.name === "hairColor"){
+        if(this._isMounted)
         this.setState({
             queryDto: {
                 ...this.state.queryDto,
@@ -72,7 +76,7 @@ onDictionaryFieldChange = (e) =>{
         if(!e.target.checked && selectedItems?.find(x=> x == e.target.name) ){
             selectedItems=selectedItems.filter(x=> x != e.target.name);
             }
-
+        if(this._isMounted)
         this.setState({
             queryDto:{
             ...this.state.queryDto,
@@ -85,6 +89,7 @@ onDictionaryFieldChange = (e) =>{
 searchUsers = () =>{
      this.searchService.searchUsers(this.state.queryDto).then(res=>{
          if(res !== undefined){
+             if(this._isMounted)
              this.setState({
                 searchResult: res
              });
@@ -93,8 +98,13 @@ searchUsers = () =>{
 }
 
 
+componentWillUnmount(){
+    this._isMounted = false;
+}
 componentDidMount(){
+    this._isMounted = true;
      this.dictionaryService.GetAllInterest().then(result=>{
+        if(this._isMounted)
         this.setState({
             interests:result,
         });
@@ -102,12 +112,14 @@ componentDidMount(){
     });
     
     this.dictionaryService.GetAllEyesColors().then(result=>{
+        if(this._isMounted)
         this.setState({
             eyesColors:result
         })
     });
     
     this.dictionaryService.GetAllHairColors().then(result=>{
+        if(this._isMounted)
         this.setState({
             hairColors:result
         })

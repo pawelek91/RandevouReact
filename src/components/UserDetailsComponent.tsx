@@ -3,6 +3,7 @@ import { Component } from "react";
 import { UserFullDto } from '../services/dto/UsersDto';
 import InterestDisplayComponent from '../components/InterestsDisplayComponent';
 import { UserComponent } from './UserComponent';
+import { UserFriendshipActionComponent } from './UserFriendshipActionComponent';
 interface IUserDetailsComponent{
     user: UserFullDto
 }
@@ -10,7 +11,10 @@ export class UserDetailsComponent extends Component<IUserDetailsComponent>{
     render(){
         const userDto = this.props.user;
         const userInterest = userDto.details?.interests as Number[];
+        console.log("render");
+        console.log(userDto.basic.id);
     return(
+        
         <>
         <UserComponent user={userDto.basic} />
         <table >
@@ -50,6 +54,8 @@ export class UserDetailsComponent extends Component<IUserDetailsComponent>{
   </tr> 
             </tbody>
         </table>
+        {userDto.basic.id !== undefined ? <UserFriendshipActionComponent userId={userDto.basic.id ?? 0} /> : undefined}
+
         </>
         )
     }

@@ -1,12 +1,12 @@
 import React from 'react';
 import { Redirect } from 'react-router';
 import FriendshipService from '../services/FriendshipService';
-import { ApiQueryService } from '../services/ApiQueryService';
 import { UsersService } from '../services/UsersService';
 import { FriendComponent } from '../components/FriendComponent';
 import { UserDto } from '../services/dto/UsersDto';
 
 class FriendsPage extends React.Component{
+    _isMsounted:boolean = false;
 state={
     friends: new Array<UserDto>(),
     invitations:new Array<UserDto>(),
@@ -16,6 +16,7 @@ friendsService = new FriendshipService();
 usersService = new UsersService();
 
 componentDidMount(){
+    this._isMsounted = true;
     this.getFriends();
     this.getInvitations();
 }
@@ -23,6 +24,7 @@ componentDidMount(){
 getFriends = () => {
     this.friendsService.GetFriendsList().then(result=>{
         this.usersService.getManyUsers(result).then(result=>{
+            if(this._isMsounted)
             this.setState({
                 friends:result
             })
@@ -33,11 +35,16 @@ getFriends = () => {
 getInvitations = () =>{
     this.friendsService.GetFriendshipsRequestsList().then(result=>{
         this.usersService.getManyUsers(result).then(result=>{
+            if(this._isMsounted)
             this.setState({
                 invitations:result
             })
         })
     })
+}
+
+componentWillUnmount(){
+    this._isMsounted = false;
 }
 render(){
     const apiKey = this.friendsService.GetApiKey();

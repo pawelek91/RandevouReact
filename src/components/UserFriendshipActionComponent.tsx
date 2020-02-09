@@ -2,7 +2,8 @@ import React from "react";
 import FriendshipService from "../services/FriendshipService";
 
 interface IUserFriendshipAction{
-    userId:number
+    userId:number,
+    callBack?
 }
 
 export class UserFriendshipActionComponent extends React.Component<IUserFriendshipAction>{
@@ -33,14 +34,30 @@ export class UserFriendshipActionComponent extends React.Component<IUserFriendsh
 
     removeFriend = (userId:number) =>{
         this.friendshipService.RemoveFriend(userId);
+        this.setState({
+            friendshipStatus:'none'
+        })
+        if(this.props.callBack !== null && this.props.callBack!==undefined)
+            this.props.callBack('removeFriend');
     }
 
     addToFriends = (userId:number) =>{
         this.friendshipService.SendInvitation(userId);
+        this.setState({
+            friendshipStatus:'created'
+        })
+        if(this.props.callBack !== null && this.props.callBack!==undefined)
+            this.props.callBack('addFriend');
     }
 
     acceptFriendship = (userId:number)=>{
+    
         this.friendshipService.AcceptFriendship(userId);
+        this.setState({
+            friendshipStatus:'friends'
+        })
+        if(this.props.callBack !== null && this.props.callBack!==undefined)
+            this.props.callBack("addFriend");
     }
 
     getUserFriendshipsActions = () => {
@@ -54,8 +71,8 @@ export class UserFriendshipActionComponent extends React.Component<IUserFriendsh
                 break;
             case 'invited':
                 friendButton = (<>
-                <button  key={userId} onClick={()=>this.acceptFriendship(userId)}>Accept</button>
-                <button key={userId}  onClick={()=>this.removeFriend(userId)}>Remove from friends</button>
+                <button  key={userId+'accept'} onClick={()=>this.acceptFriendship(userId)}>Accept</button>
+                <button key={userId+'remove'}  onClick={()=>this.removeFriend(userId)}>Remove from friends</button>
                 </>);
                 break;
             case 'created':

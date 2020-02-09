@@ -1,14 +1,14 @@
 import { ApiQueryService } from "./ApiQueryService";
 import DictionaryItemDto from "./dto/DictionaryItemDto";
 
-class DictionaryService{
+class DictionaryService extends ApiQueryService{
 
     InterestsEnd = ApiQueryService.ApiEndpoint + '/api/UserDictItems/Interest';
     HairColorsEnd = ApiQueryService.ApiEndpoint + '/api/UserDictItems/HairColors';
     EyesColorsEnd = ApiQueryService.ApiEndpoint + '/api/UserDictItems/EyesColors';
 
     GetDictionaryItems(endpoint:string){
-        let apiKey = localStorage.getItem('apiKey');
+        let apiKey = this.GetApiKey();
         if(apiKey === null)
             apiKey ='';
 

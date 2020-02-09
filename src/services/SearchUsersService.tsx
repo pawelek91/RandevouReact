@@ -7,7 +7,7 @@ export class SearchUsersService extends ApiQueryService{
     postUserFindEnd  =  ApiQueryService.ApiEndpoint + '/api/UserFinder';
 
     searchUsers(dto: SearchQueryDto){
-        let apiKey = localStorage.getItem('apiKey');
+        let apiKey = this.GetApiKey();
         if(apiKey === null)
             apiKey ='';
 

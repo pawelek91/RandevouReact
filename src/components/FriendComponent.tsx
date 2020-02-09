@@ -5,39 +5,34 @@ import * as React from 'react';
 import { UserFriendshipActionComponent } from "./UserFriendshipActionComponent";
 interface IFriendComponent{
     user: UserDto
+    callBack?
 }
 export class FriendComponent extends Component<IFriendComponent>{
     state = {
         friendshipStatus: 'friends'
     }
-
-    removeFriend = (userId) =>{
-        console.log(userId);
+    
+    callBack = (action) =>{
+        console.log("friendComponent callBack");
+        if(this.props.callBack!==null && this.props.callBack!==undefined)
+        {
+            if(action === 'removeFriend'){
+                this.props.callBack('friends');
+            }
+            else{
+                this.props.callBack();
+            } 
+        }
     }
-
-    addToFriends = (userId) =>{
-        console.log(userId);
-    }
-
+            
     
     render(){
-        // const {friendshipStatus}=this.state;    
-        // const userId = this.props.user.id;
-        // let friendButton;
-        // switch(friendshipStatus.toLocaleLowerCase())
-        // {
-        //     case 'friends':
-        //         friendButton = <button key={userId}  onClick={()=>this.removeFriend(userId)}>Remove from friends</button>;
-        //         break;
-        //     case 'invited':
-        //         friendButton = <button  key={userId} onClick={()=>this.addToFriends(userId)}>Add to friends</button>;
-        //         break;
-        // }
+
         return (
             <>
             
         <UserComponent user={this.props.user} />
-        <UserFriendshipActionComponent userId={this.props.user.id ?? 0} />
+        <UserFriendshipActionComponent userId={this.props.user.id ?? 0} callBack={this.callBack} />
         </>
         )
     }

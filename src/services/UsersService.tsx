@@ -18,7 +18,7 @@ export class UsersService extends ApiQueryService{
   getUsersAvatars = this.getManyUsersEnd + '/Avatars/base64img';
 
   getManyUsers(ids:Array<Number>):Promise<UserDto[]>{
-    let apiKey = localStorage.getItem('apiKey');
+    let apiKey = this.GetApiKey();
     if(apiKey === null)
         apiKey ='';
         
@@ -37,7 +37,7 @@ export class UsersService extends ApiQueryService{
     }
 
     getUserDetais(id:number){
-        let apiKey = localStorage.getItem('apiKey');
+        let apiKey = this.GetApiKey();
         if(apiKey === null)
             apiKey ='';
         
@@ -61,7 +61,7 @@ export class UsersService extends ApiQueryService{
     }
 
     getUserBasic(id:number){
-        let apiKey = localStorage.getItem('apiKey');
+        let apiKey = this.GetApiKey();
         if(apiKey === null)
             apiKey ='';
         

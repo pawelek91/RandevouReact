@@ -43,9 +43,26 @@ getInvitations = () =>{
     })
 }
 
+
+
 componentWillUnmount(){
     this._isMsounted = false;
 }
+
+callBack(action:string){
+    debugger;
+    if(action === 'invitations'){
+        this.getInvitations();
+    }
+    else if(action === 'friends'){
+        this.getFriends();
+    }
+    else{
+        this.getInvitations();
+        this.getFriends();
+    }
+}
+
 render(){
     const apiKey = this.friendsService.GetApiKey();
   
@@ -61,14 +78,14 @@ render(){
     const friendsList = this.state.friends.map(x=>{
         return (
         <div key={x.id} style={userStyle}>
-        <FriendComponent user={x}></FriendComponent>
+        <FriendComponent user={x} callBack={this.callBack.bind(this)}></FriendComponent>
         </div>)
     })
 
     const invitationsList = this.state.invitations.map(x=>{
         return (
             <div key={x.id} style={userStyle}>
-            <FriendComponent user={x}></FriendComponent>
+            <FriendComponent user={x} callBack={this.callBack.bind(this)} />
             </div>)
     })
 

@@ -1,9 +1,9 @@
+/* eslint-disable eqeqeq */
 import React from 'react';
 import { Redirect } from 'react-router';
 import { ApiQueryService } from '../services/ApiQueryService';
 import DictionaryItemDto from '../services/dto/DictionaryItemDto';
 import DictionaryService from '../services/DictionaryService';
-import FieldBasicFieldsComponent from '../components/FinderBasicFieldsComponent';
 import { UserDto, UserFullDto, UserDetailsDto } from '../services/dto/UsersDto';
 import { UsersService } from '../services/UsersService';
 import UserProfileComponent from '../components/UserProfileComponent';
@@ -18,6 +18,10 @@ interface IProfilePageState{
  interests : Array<DictionaryItemDto>
  eyesColors: Array<DictionaryItemDto>
  hairColors: Array<DictionaryItemDto>
+
+ selectedEyesColorId?: number
+ selectedHairColorId?: number
+ selectedInterests: Array<number>
 }
 
 class ProfilePage extends React.Component<IProfilePageProps, IProfilePageState>{
@@ -26,12 +30,18 @@ class ProfilePage extends React.Component<IProfilePageProps, IProfilePageState>{
     dictionaryService = new DictionaryService();
 
     _isMounted = false;
+    _interestsLoaded =false;
+    _eyesColorsLoaded = false;
+    _hairColorsLoaded = false;
+    _basicLoaded = false;
+    _detailsLoaded = false;
 
     state={
         interests : new Array<DictionaryItemDto>(),
         eyesColors: new Array<DictionaryItemDto>(),
         hairColors: new Array<DictionaryItemDto>(),
-        userFullDto: { basic:{}, details: {}}
+        userFullDto: { basic:{}, details: {}},
+        selectedInterests: new Array<number>()
     }
 
     componentWillUnmount(){
@@ -41,22 +51,26 @@ class ProfilePage extends React.Component<IProfilePageProps, IProfilePageState>{
     componentDidMount(){
         this._isMounted=true;
         this.getLoggedUserData();
+        this.getDictionariesValues();
     }
 
     getLoggedUserData = () =>{
         var loggedUserId = +this.usersService.GetIdentity();
         this.usersService.getUserBasic(loggedUserId).then(result=>{
             const basicDto = result as UserDto;
+            this._basicLoaded = true;
             this.setState({
                 userFullDto:{
                     ...this.state.userFullDto,
                     basic: basicDto
                 }
             });
+            
         })
 
         this.usersService.getUserDetais(loggedUserId).then(result=>{
             const detailsDto = result as UserDetailsDto;
+            this._detailsLoaded = true;
             this.setState({
                 userFullDto:{
                     ...this.state.userFullDto,
@@ -64,23 +78,30 @@ class ProfilePage extends React.Component<IProfilePageProps, IProfilePageState>{
                 }
             })
         })
+        
     }
 
     getDictionariesValues = () =>{
         this.dictionaryService.GetAllInterest().then(result=>{
+            this._interestsLoaded=true;
             this.setState({
                 interests: result
             })
+            
         })
         this.dictionaryService.GetAllEyesColors().then(result=>{
+            this._eyesColorsLoaded = true;
             this.setState({
                 eyesColors: result
             })
+            
         })
         this.dictionaryService.GetAllHairColors().then(result=>{
+            this._hairColorsLoaded = true;
             this.setState({
                 hairColors:result
             })
+            
         })
     }
 
@@ -90,53 +111,63 @@ class ProfilePage extends React.Component<IProfilePageProps, IProfilePageState>{
     onFieldChange = (e) => {
         const value = e.target.value;
         const checked = e.target.checked;
-        const name=e.target.name;
+        let name=e.target.name as string;
         const type=e.target.type;
         if(type === "checkbox"){
             if(this._isMounted)
             this.setState({
-                queryDto: {
-                    ...this.state.queryDto,
+                userFullDto: {
+                    ...this.state.userFullDto,
+
                 [name]:checked
             }})
         }
         else {
-            if(this._isMounted)
-            this.setState({
+            if(this._isMounted){            
+                if(name.startsWith('basic_')){
+                    name = name.substring(0,'basic_'.length)
+                    this.setState({
+                        userFullDto: {
+                            ...this.state.userFullDto,
+                            basic: {
+                                [name]: value
+                            }
+                        }
+                    })}
                 
-                queryDto: {
-                    ...this.state.queryDto,
-                    [name]:value
+                else{
+                    this.setState({
+                        userFullDto: {
+                            ...this.state.userFullDto,
+                            details: {
+                                [name]: value
+                            }
+                        }
+                    })
+                    }
                 }
-                
-            })
+            }
         }
-    }
 
     onDictionaryFieldChange = (e) =>{
         if(e.target.name === "eyesColor"){
             if(this._isMounted)
             this.setState({
-                queryDto: {
-                    ...this.state.queryDto,
-                    eyescolor: e.target.value,
-            }})
+             selectedEyesColorId : e.target.value    
+            })
         }
         else if(e.target.name === "hairColor"){
             if(this._isMounted)
             this.setState({
-                queryDto: {
-                    ...this.state.queryDto,
-                    haircolor: e.target.value,
-            }})
+                selectedHairColorId: e.target.value
+            })
         }
     
         else{
-            let selectedItems = this.state.queryDto.interestids ?? [];
+            let selectedItems = this.state.selectedInterests ?? [];
             
             if(e.target.checked && !selectedItems?.find(x=> x == e.target.name) ){
                 selectedItems.push(e.target.name*1);
-    
             }
     
             if(!e.target.checked && selectedItems?.find(x=> x == e.target.name) ){
@@ -144,44 +175,49 @@ class ProfilePage extends React.Component<IProfilePageProps, IProfilePageState>{
                 }
             if(this._isMounted)
             this.setState({
-                queryDto:{
-                ...this.state.queryDto,
-                interestids: selectedItems,
-            }})
+                selectedInterests: selectedItems,
+            })
         }
        
     }
 
     render(){
-         
-        const finderStyle={
-            display: 'inline-grid',
-            width:'35%',
-            margin:'10px',
-     
-        }
     
-     
-    
+        
+
         const apiKey = this.service.GetApiKey();
       
         if(apiKey === undefined || apiKey === null || apiKey===''){
             return <Redirect to='/login'/>
         }
-    
-        return(
+
+        const {eyesColors, hairColors, interests, userFullDto} = this.state;
+        const userDetailsDto = userFullDto.details;
+        const userBasicDto = userFullDto.basic;
+
+        if(this._basicLoaded && this._detailsLoaded && this._hairColorsLoaded && this._interestsLoaded && this._eyesColorsLoaded){
+            console.log(eyesColors);
+            return(
+                
+            <div className="finder" >
+        
+                <UserProfileComponent userBasicDto={userBasicDto} 
+                userDetailsDto={userDetailsDto}
+                eyesColors={eyesColors}
+                hairColors={hairColors}
+                interests={interests}
+                onFieldChange={this.onFieldChange}
+                onDictionaryFieldChange={this.onDictionaryFieldChange}
+                />
             
-        <div className="finder" >
-    
-              <UserProfileComponent userBasicDto={query} 
-              userDetailsDto={}
-              eyesColors={}
-              hairColors={}
-              interests={}
-               onFieldChange={this.onFieldChange} />
-          
-        </div>
-        )
+            </div>
+            )
+        }
+        else{
+            return(
+                <p>Loading data</p>
+            )
+        }
     }
 }
 

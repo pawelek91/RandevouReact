@@ -1,12 +1,15 @@
 import React from 'react';
 
 const UserProfileComponent = (props) => {
-    const {userBasicDto, userDetailsDto, onFieldChange, eyesColors, hairColors, interests} = props;
+    const {userBasicDto, userDetailsDto, eyesColors, hairColors, interests,onFieldChange, onDictionaryFieldChange} = props;
 
     
-    let eyesColorsFields ;
-    if(this.state.eyesColors.length >0){
-        eyesColorsFields = this.state.eyesColors.map(item=>
+    let eyesColorsFields;
+    
+    
+    
+    if(eyesColors.length >0){
+        eyesColorsFields = eyesColors.map(item=>
             (
                 <option key={item.id} value={item.id}> {item.displayName} </option>
             )  
@@ -14,8 +17,8 @@ const UserProfileComponent = (props) => {
     }
 
     let hairColorsFields ;
-    if(this.hairColors.length >0){
-        hairColorsFields = this.hairColors.map(item=>
+    if(hairColors.length >0){
+        hairColorsFields = hairColors.map(item=>
             (
                 <option key={item.id} value={item.id}> {item.displayName} </option>
             )  
@@ -23,21 +26,28 @@ const UserProfileComponent = (props) => {
     }
 
     let interestsIds;
-    if(this.interests.length >0){
-        interestsIds = this.interests.map(item=>
+    if(interests.length >0){
+        interestsIds = interests.map(item=>
             (
                 <label key={item.name}>
-                    <input type="checkbox" key={item.name} name={item.id+''} onChange={this.onDictionaryFieldChange}  /> 
+                    <input type="checkbox" key={item.name} name={item.id+''} onChange={onDictionaryFieldChange}  /> 
                     {item.displayName}
                 </label>
             )
         )
     }
 
+    const profileStyle={
+        display: 'inline-grid',
+        width:'35%',
+        margin:'10px',
+ 
+    }
+
     return (  
-        <>
+        <div style={profileStyle}>
            <label htmlFor="userName">Nazwa wyświetlana użytkownika</label>
-            <input type="text" id="name" name="name" value={userBasicDto.displayName} onChange={onFieldChange} />
+            <input type="text" id="name" name="basic_name" value={userBasicDto.displayName} onChange={onFieldChange} />
 
             <label htmlFor="region">Województwo</label>
             <input type="text" id="region" name="region" value={userDetailsDto.region} onChange={onFieldChange} />
@@ -47,14 +57,14 @@ const UserProfileComponent = (props) => {
 
 
             <label htmlFor="age">Data urodzenia</label>
-            <input type="text" id="age" name="ageto" value={userBasicDto.birthDate} onChange={onFieldChange}  />
+            <input type="text" id="age" name="basic_birthDate" value={userBasicDto.birthDate} onChange={onFieldChange}  />
 
             <label htmlFor="width">Wzrost</label>
             <input type="text" id="width" name="width"value={userDetailsDto.Width} onChange={onFieldChange}  />
 
 
             <label htmlFor="heigthFrom">Waga</label>
-            <input type="text" id="heigthFrom" name="heigthFrom" value={userDetailsDto.height} onChange={onFieldChange}  />
+            <input type="text" id="heigth" name="heigth" value={userDetailsDto.height} onChange={onFieldChange}  />
 
             <label htmlFor="gender">Płeć</label>
             <select id="gender" name="gender" onChange={onFieldChange}>
@@ -66,21 +76,21 @@ const UserProfileComponent = (props) => {
             <input type="text" id="tatoos" name="tatoos" checked={userDetailsDto.tatoos} onChange={onFieldChange}  />
 
             <label htmlFor="eyesColor">Kolor oczu</label>
-            <select id="eyesColor" name="eyesColor"  onChange={this.onDictionaryFieldChange}>
+            <select id="eyesColor" name="eyesColor"  onChange={onDictionaryFieldChange}>
             {eyesColorsFields}
             </select>
 
 
             <label htmlFor="hairColor">Kolor włosów</label>
-            <select  id="hairHolor" name="hairColor" onChange={this.onDictionaryFieldChange}>
+            <select  id="hairHolor" name="hairColor" onChange={onDictionaryFieldChange}>
             {hairColorsFields}
             </select>
 
 
             <p>Zainteresowania</p>
             {interestsIds}
-            <button type="submit" onClick={this.searchUsers}>Wyszukaj</button>
-        </>
+            <button type="submit" >Zapisz</button>
+        </div>
     );
 }
  

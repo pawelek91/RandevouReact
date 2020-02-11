@@ -52,6 +52,8 @@ class ProfilePage extends React.Component<IProfilePageProps, IProfilePageState>{
         this._isMounted=true;
         this.getLoggedUserData();
         this.getDictionariesValues();
+
+    
     }
 
     getLoggedUserData = () =>{
@@ -114,10 +116,7 @@ class ProfilePage extends React.Component<IProfilePageProps, IProfilePageState>{
 
     onDateFieldChange = (e) =>{
         if(this._isMounted){
-            let date = new Date(e);
-            console.log(date);
-            console.log(date.toJSON());
-        this.setState({
+         this.setState({
             userFullDto: {
                 ...this.state.userFullDto,
                 birthDate: e,
@@ -179,19 +178,46 @@ class ProfilePage extends React.Component<IProfilePageProps, IProfilePageState>{
         if(e.target.name === "eyesColor"){
             if(this._isMounted)
             this.setState({
-             selectedEyesColorId : e.target.value    
+                userFullDto: {
+                    ...this.state.userFullDto,
+                    details:{
+                        ...this.state.userFullDto.details,
+                        eyesColor: e.target.value
+                    }
+
+                }
             })
         }
         else if(e.target.name === "hairColor"){
             if(this._isMounted)
             this.setState({
-                selectedHairColorId: e.target.value
+                userFullDto: {
+                    ...this.state.userFullDto,
+                    details:{
+                        ...this.state.userFullDto.details,
+                        hairColor: e.target.value
+                    }
+
+                }
+            })
+        }
+        else if(e.target.name === "gender"){
+            if(this._isMounted)
+            this.setState({
+                userFullDto: {
+                    ...this.state.userFullDto,
+                    basic:{
+                        ...this.state.userFullDto.basic,
+                        gender: e.target.value
+                    }
+
+                }
             })
         }
     
         else{
             let selectedItems = this.state.selectedInterests ?? [];
-            
+            debugger;
             if(e.target.checked && !selectedItems?.find(x=> x == e.target.name) ){
                 selectedItems.push(e.target.name*1);
             }
@@ -207,10 +233,14 @@ class ProfilePage extends React.Component<IProfilePageProps, IProfilePageState>{
        
     }
 
+    onSave= () => {
+        console.log(this.state);
+    }
+
     render(){
     
         
-
+        console.log(this.state);
         const apiKey = this.service.GetApiKey();
       
         if(apiKey === undefined || apiKey === null || apiKey===''){
@@ -232,6 +262,7 @@ class ProfilePage extends React.Component<IProfilePageProps, IProfilePageState>{
                 onFieldChange={this.onFieldChange}
                 onDictionaryFieldChange={this.onDictionaryFieldChange}
                 onDateFieldChange={this.onDateFieldChange}
+                onSave={this.onSave}
                 />
             
             </div>

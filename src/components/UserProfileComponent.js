@@ -1,9 +1,13 @@
 import React from 'react';
+import DatePicker from "react-datepicker";
+ 
+import "react-datepicker/dist/react-datepicker.css";
 
 const UserProfileComponent = (props) => {
-    const {userBasicDto, userDetailsDto, eyesColors, hairColors, interests,onFieldChange, onDictionaryFieldChange} = props;
+    const {userFullDto,eyesColors, hairColors, interests,onFieldChange, onDictionaryFieldChange,onDateFieldChange} = props;
+    const userBasicDto = userFullDto.basic;
+    const userDetailsDto = userFullDto.details;
 
-    
     let eyesColorsFields;
     
     
@@ -57,7 +61,7 @@ const UserProfileComponent = (props) => {
 
 
             <label htmlFor="age">Data urodzenia</label>
-            <input type="text" id="age" name="basic_birthDate" value={userBasicDto.birthDate} onChange={onFieldChange}  />
+            <DatePicker name="basic_birthdate" selected={userFullDto.birthDate} onChange={onDateFieldChange} />
 
             <label htmlFor="width">Wzrost</label>
             <input type="text" id="width" name="width"value={userDetailsDto.Width} onChange={onFieldChange}  />

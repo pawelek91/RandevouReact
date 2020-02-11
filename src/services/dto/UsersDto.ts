@@ -41,6 +41,7 @@ export interface UserCreateDto {
   export interface UserFullDto {
     basic: UserDto;
     details: UserDetailsDto;
+    birthDate?:Date
   }
   
   export interface UserAvatarDto {

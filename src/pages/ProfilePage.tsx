@@ -57,12 +57,16 @@ class ProfilePage extends React.Component<IProfilePageProps, IProfilePageState>{
     getLoggedUserData = () =>{
         var loggedUserId = +this.usersService.GetIdentity();
         this.usersService.getUserBasic(loggedUserId).then(result=>{
+            
             const basicDto = result as UserDto;
+            
+            const birthDate = new Date(basicDto.birthDate as string)
             this._basicLoaded = true;
             this.setState({
                 userFullDto:{
                     ...this.state.userFullDto,
-                    basic: basicDto
+                    basic: basicDto,
+                    birthDate
                 }
             });
             
@@ -108,12 +112,31 @@ class ProfilePage extends React.Component<IProfilePageProps, IProfilePageState>{
     
     service = new ApiQueryService();
 
+    onDateFieldChange = (e) =>{
+        if(this._isMounted){
+            let date = new Date(e);
+            console.log(date);
+            console.log(date.toJSON());
+        this.setState({
+            userFullDto: {
+                ...this.state.userFullDto,
+                birthDate: e,
+                basic:{
+                    ...this.state.userFullDto.basic,
+                    birthDate: new Date(e).toJSON()
+                }
+            }})}
+            console.log(this.state.userFullDto);
+    }
+
     onFieldChange = (e) => {
-        const value = e.target.value;
-        const checked = e.target.checked;
-        let name=e.target.name as string;
+        
         const type=e.target.type;
+        let name=e.target.name as string;
+
+
         if(type === "checkbox"){
+            const checked = e.target.checked;
             if(this._isMounted)
             this.setState({
                 userFullDto: {
@@ -123,13 +146,15 @@ class ProfilePage extends React.Component<IProfilePageProps, IProfilePageState>{
             }})
         }
         else {
-            if(this._isMounted){            
+            if(this._isMounted){
+                const value = e.target.value;
                 if(name.startsWith('basic_')){
                     name = name.substring(0,'basic_'.length)
                     this.setState({
                         userFullDto: {
                             ...this.state.userFullDto,
                             basic: {
+                                ...this.state.userFullDto.basic,
                                 [name]: value
                             }
                         }
@@ -140,6 +165,7 @@ class ProfilePage extends React.Component<IProfilePageProps, IProfilePageState>{
                         userFullDto: {
                             ...this.state.userFullDto,
                             details: {
+                                ...this.state.userFullDto.details,
                                 [name]: value
                             }
                         }
@@ -192,22 +218,20 @@ class ProfilePage extends React.Component<IProfilePageProps, IProfilePageState>{
         }
 
         const {eyesColors, hairColors, interests, userFullDto} = this.state;
-        const userDetailsDto = userFullDto.details;
-        const userBasicDto = userFullDto.basic;
 
         if(this._basicLoaded && this._detailsLoaded && this._hairColorsLoaded && this._interestsLoaded && this._eyesColorsLoaded){
-            console.log(eyesColors);
             return(
                 
             <div className="finder" >
         
-                <UserProfileComponent userBasicDto={userBasicDto} 
-                userDetailsDto={userDetailsDto}
+                <UserProfileComponent 
+                userFullDto = {userFullDto}
                 eyesColors={eyesColors}
                 hairColors={hairColors}
                 interests={interests}
                 onFieldChange={this.onFieldChange}
                 onDictionaryFieldChange={this.onDictionaryFieldChange}
+                onDateFieldChange={this.onDateFieldChange}
                 />
             
             </div>

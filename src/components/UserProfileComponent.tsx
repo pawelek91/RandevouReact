@@ -88,7 +88,6 @@ const UserProfileComponent = (props) => {
             )  
         );
     }
-    console.log(userDetailsDto);
     let selectFieldEyesColor = userDetailsDto.eyesColor !== undefined ?
     generateDictionaryFields("eyesColor",userDetailsDto.eyesColor,eyesColors, onDictionaryFieldChange)
       : (<select id="eyesColor" name="eyesColor"  onChange={onDictionaryFieldChange}> {eyesColorsFields}</select>)
@@ -99,10 +98,12 @@ const UserProfileComponent = (props) => {
   
       let selectGenderField = generateGenderField(userBasicDto.gender ?? '', onDictionaryFieldChange);
 
-    let interestsIds;
-    if(interests.length >0){
-        interestsIds = interests.map(item=>{
-            let isChecked =  userDetailsDto.interests?.find(x=>x === item.id) !== undefined;
+    let interestsFields;
+
+    const interestsDictItems = interests as DictionaryItemDto[];
+    if(interestsDictItems.length >0){
+        interestsFields = interestsDictItems.map(item=>{
+            let isChecked = item.boolValue  || userDetailsDto.interests?.find(x=>x === item.id) !== undefined;
 
             return (
                 <label key={item.name}>
@@ -159,7 +160,7 @@ const UserProfileComponent = (props) => {
 
 
             <p>Zainteresowania</p>
-            {interestsIds}
+            {interestsFields}
             <button type="submit" onClick={onSave} >Zapisz</button>
         </div>
     );

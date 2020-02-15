@@ -18,10 +18,6 @@ interface IProfilePageState{
  interests : Array<DictionaryItemDto>
  eyesColors: Array<DictionaryItemDto>
  hairColors: Array<DictionaryItemDto>
-
- selectedEyesColorId?: number
- selectedHairColorId?: number
- selectedInterests: Array<number>
 }
 
 class ProfilePage extends React.Component<IProfilePageProps, IProfilePageState>{
@@ -125,7 +121,6 @@ class ProfilePage extends React.Component<IProfilePageProps, IProfilePageState>{
                     birthDate: new Date(e).toJSON()
                 }
             }})}
-            console.log(this.state.userFullDto);
     }
 
     onFieldChange = (e) => {
@@ -216,8 +211,8 @@ class ProfilePage extends React.Component<IProfilePageProps, IProfilePageState>{
         }
     
         else{
-            let selectedItems = this.state.selectedInterests ?? [];
-            debugger;
+            let selectedItems = (this.state.userFullDto.details as UserDetailsDto).interests ?? [];
+            
             if(e.target.checked && !selectedItems?.find(x=> x == e.target.name) ){
                 selectedItems.push(e.target.name*1);
             }
@@ -225,9 +220,16 @@ class ProfilePage extends React.Component<IProfilePageProps, IProfilePageState>{
             if(!e.target.checked && selectedItems?.find(x=> x == e.target.name) ){
                 selectedItems=selectedItems.filter(x=> x != e.target.name);
                 }
+
             if(this._isMounted)
             this.setState({
-                selectedInterests: selectedItems,
+                userFullDto: {
+                    ...this.state.userFullDto,
+                    details:{
+                        ...this.state.userFullDto.details,
+                        interests:selectedItems
+                    }
+                }
             })
         }
        
@@ -239,8 +241,6 @@ class ProfilePage extends React.Component<IProfilePageProps, IProfilePageState>{
 
     render(){
     
-        
-        console.log(this.state);
         const apiKey = this.service.GetApiKey();
       
         if(apiKey === undefined || apiKey === null || apiKey===''){

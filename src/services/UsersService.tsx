@@ -10,6 +10,7 @@ export class UsersService extends ApiQueryService{
   patchUserEnd = this.usersEnd;
   deleteUserEnd = this.usersEnd + '/{id}';
   postUserEnd = this.usersEnd;
+  
 
   getUserDetailsEnd = this.getUserEnd + '/Details';
   putUserDetailsEnd = this.patchUserEnd + '/{id}/Details';
@@ -83,6 +84,49 @@ export class UsersService extends ApiQueryService{
         }).catch(err=>{
             console.log(err);
         })
+    }
 
+    patchtUserBasic(userDto: UserDto){
+        let apiKey = this.GetApiKey();
+        if(apiKey === null)
+            apiKey ='';
+        
+        const endpoint = this.BuildAddress(this.patchUserEnd);
+        const header = new Headers();
+        header.append('Content-Type','application/json');
+        header.append('Authorization',apiKey);
+
+        fetch(endpoint, {
+            method:'PATCH',
+            headers:header,
+            body: JSON.stringify(userDto)
+        }).then(result=>{
+            if(!result.ok){
+                Error('Nie udało się zapisać podstawowych danych użyszkodnika');
+            }
+        }).catch(err=> console.log(err));
+    }
+
+    patchUserDetails(dto:UserDetailsDto){
+        let apiKey = this.GetApiKey();
+        if(apiKey === null)
+            apiKey ='';
+        
+        const identity = this.GetIdentity();
+        const endpoint = this.BuildAddress(this.putUserDetailsEnd,+identity);
+        console.log(endpoint);
+        const header = new Headers();
+        header.append('Content-Type','application/json');
+        header.append('Authorization',apiKey);
+
+        fetch(endpoint, {
+            method:'PATCH',
+            headers:header,
+            body: JSON.stringify(dto)
+        }).then(result=>{
+            if(!result.ok){
+                Error('Nie udało się zapisać podstawowych danych użyszkodnika');
+            }
+        }).catch(err=> console.log(err));
     }
 }

@@ -237,6 +237,8 @@ class ProfilePage extends React.Component<IProfilePageProps, IProfilePageState>{
 
     onSave= () => {
         console.log(this.state);
+        this.usersService.patchtUserBasic(this.state.userFullDto.basic);
+        this.usersService.patchUserDetails(this.state.userFullDto.details);
     }
 
     render(){

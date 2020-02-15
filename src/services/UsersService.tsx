@@ -19,114 +19,22 @@ export class UsersService extends ApiQueryService{
   getUsersAvatars = this.getManyUsersEnd + '/Avatars/base64img';
 
   getManyUsers(ids:Array<Number>):Promise<UserDto[]>{
-    let apiKey = this.GetApiKey();
-    if(apiKey === null)
-        apiKey ='';
-        
-    const header = new Headers();
-    header.append('Content-Type','application/json');
-    header.append('Authorization',apiKey);
-    return fetch(this.getManyUsersEnd, {
-        method:'Post',
-        headers: header,
-        body: JSON.stringify(ids)
-    }).then(result=>{
-        return result.json().then(result=>{
-            return result as UserDto[]
-          }
-    )})
+    return this.postSpecific<UserDto[]>(this.getManyUsersEnd, ids);
     }
 
     getUserDetais(id:number){
-        let apiKey = this.GetApiKey();
-        if(apiKey === null)
-            apiKey ='';
-        
-        const endpoint = this.BuildAddress(this.getUserDetailsEnd,id);
-        const header = new Headers();
-        header.append('Content-Type','application/json');
-        header.append('Authorization',apiKey);
-        return fetch(endpoint, {
-            method:'Get',
-            headers: header,
-        }).then(res=>{
-            if(!res.ok || res.status === 204){
-                throw Error('Nie udałosię pobrać użyszkodnika');
-            }
-            return res.json().then(result=> {
-                return result as UserDetailsDto;
-            })
-        }).catch(err=>{
-            console.log(err);
-        })
+        return this.get<UserDetailsDto>(this.BuildAddress(this.getUserDetailsEnd,id)); 
     }
 
-    getUserBasic(id:number){
-        let apiKey = this.GetApiKey();
-        if(apiKey === null)
-            apiKey ='';
-        
-        const endpoint = this.BuildAddress(this.getUserEnd,id);
-        const header = new Headers();
-        header.append('Content-Type','application/json');
-        header.append('Authorization',apiKey);
-        return fetch(endpoint, {
-            method:'Get',
-            headers: header,
-        }).then(res=>{
-            if(!res.ok || res.status === 204){
-                
-                throw Error('Nie udało się pobrać użyszkodnika');
-            }
-            return res.json().then(result=> {
-                return result as UserDto;
-            })
-        }).catch(err=>{
-            console.log(err);
-        })
+    getUserBasic(id:number):Promise<UserDto> {
+        return this.get<UserDto>(this.BuildAddress(this.getUserEnd,id)); 
     }
-
+         
     patchtUserBasic(userDto: UserDto){
-        let apiKey = this.GetApiKey();
-        if(apiKey === null)
-            apiKey ='';
-        
-        const endpoint = this.BuildAddress(this.patchUserEnd);
-        const header = new Headers();
-        header.append('Content-Type','application/json');
-        header.append('Authorization',apiKey);
-
-        fetch(endpoint, {
-            method:'PATCH',
-            headers:header,
-            body: JSON.stringify(userDto)
-        }).then(result=>{
-            if(!result.ok){
-                Error('Nie udało się zapisać podstawowych danych użyszkodnika');
-            }
-        }).catch(err=> console.log(err));
+        this.patch(this.BuildAddress(this.patchUserEnd), userDto);
     }
 
     patchUserDetails(dto:UserDetailsDto){
-        let apiKey = this.GetApiKey();
-        if(apiKey === null)
-            apiKey ='';
-        
-        const identity = this.GetIdentity();
-        const endpoint = this.BuildAddress(this.putUserDetailsEnd,+identity);
-        console.log(endpoint);
-        const header = new Headers();
-        header.append('Content-Type','application/json');
-        header.append('Authorization',apiKey);
-
-        fetch(endpoint, {
-            method:'PATCH',
-            headers:header,
-            body: JSON.stringify(dto)
-        }).then(result=>{
-            if(!result.ok){
-                Error('Nie udało się zapisać podstawowych danych użyszkodnika');
-            }
-        }).catch(err=> console.log(err));
+        this.patch(this.BuildAddress(this.putUserDetailsEnd,+this.GetIdentity()), dto);
     }
 }

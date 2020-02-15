@@ -6,35 +6,10 @@ import { UserDto } from './dto/UsersDto';
 export class SearchUsersService extends ApiQueryService{
     postUserFindEnd  =  ApiQueryService.ApiEndpoint + '/api/UserFinder';
 
-    searchUsers(dto: SearchQueryDto){
-        let apiKey = this.GetApiKey();
-        if(apiKey === null)
-            apiKey ='';
-
-        const header = new Headers();
-        header.append('Content-Type','application/json');
-        header.append('Authorization',apiKey);
-        return fetch(this.postUserFindEnd, {
-            method:'Post',
-            headers: header,
-            body: JSON.stringify(dto)
-        }).then(result=>{
-            return result.json()
-        }).then(result=>{
-            
-            let ids = result as Array<Number>;
-            if(ids === null || ids==undefined){
-                throw Error;
-            }
-
-            if(ids.length >0){
-                const usersService = new UsersService();
-                return usersService.getManyUsers(ids);
-            }
-            
-        }).catch(err=>{
-            console.log(err);
-            return undefined;
+    searchUsers(dto: SearchQueryDto):Promise<UserDto[]>{
+        return this.postSpecific<Array<Number>>(this.postUserFindEnd, dto)
+        .then(result=>{
+            return new UsersService().getManyUsers(result);
         })
     }
 }

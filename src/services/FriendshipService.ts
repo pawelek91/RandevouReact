@@ -11,72 +11,27 @@ export default class FriendshipService extends ApiQueryService{
     SetFriendshipStatusEnd = this.FriendshipQueryEndpoint + '/FriendshipStatusAction';
     GetFriendshipStatusNend = this.FriendshipQueryEndpoint + '/users/{id}/RelationStatus/';
 
-    GetFriendsList() {
-        let identity = this.GetIdentity();
-        const endpoint = this.BuildAddress(this.GetFriendsListEnd, +identity);
-        
-        let apiKey =  this.GetApiKey();
-        if(apiKey === null)
-            apiKey ='';
-
-        const header = new Headers();
-        header.append('Content-Type','application/json');
-        header.append('Authorization',apiKey);
-        return fetch(endpoint,{method:'Get',headers: header})
-        .then(result=> {
-            return result.json().then(res=>{
-                return res as Number[];
-            })
-        })
-        
+    GetFriendsList():Promise<Number[]> {
+        return this.get<Number[]>(this.BuildAddress(this.GetFriendsListEnd, +this.GetIdentity()));
         }
 
-        GetFriendshipsRequestsList(){
-            const identity = this.GetIdentity();
-            const endpoint =  this.BuildAddress(this.GetFriendshipisRequestsEnd, +identity);
-            
-            let apiKey =  this.GetApiKey();
-            if(apiKey === null)
-                apiKey ='';
-    
-            const header = new Headers();
-            header.append('Content-Type','application/json');
-            header.append('Authorization',apiKey);
-            
-            return fetch(endpoint,{method:'Get',headers: header})
-            .then(result=> {
-                return result.json().then(res=>{
-                    return res as Number[];
-                })
-            })
+        GetFriendshipsRequestsList():Promise<Number[]>{
+            return this.get<Number[]>(this.BuildAddress(this.GetFriendshipisRequestsEnd, +this.GetIdentity()));
         }
 
         SendInvitation(userId:number){
-            let apiKey =  this.GetApiKey();
-            if(apiKey === null)
-                apiKey ='';
-
             const loggedUserId = +this.GetIdentity();
             const endpoint = this.SendInvitationEnd;
             const dto :  FriendhsipSendRequestDto = { fromUserId :loggedUserId,toUserId: userId };
-
-            const header = new Headers();
-            header.append('Content-Type','application/json');
-            header.append('Authorization',apiKey);
-            
-            return fetch(endpoint,{method:'Put',headers: header, body: JSON.stringify(dto)}).then(res=>
-                {
-                    if(!res.ok){
-                        console.log("Nie udało się wysłać zaproszenia");
-                        console.log(res.json());
-                    }
-                })
+            return this.put(endpoint, dto);
         }
 
         GetFriendshipStatus(user1Id: number, user2Id: number) {
             let endpoint = this.BuildAddress(this.GetFriendshipStatusNend, user1Id);
             endpoint += user2Id;
              
+
+            // return this.get<string>(endpoint);
             let apiKey =  this.GetApiKey();
             if(apiKey === null)
                 apiKey ='';
@@ -103,48 +58,19 @@ export default class FriendshipService extends ApiQueryService{
         }
 
         AcceptFriendship(userId:number){
-            let apiKey =  this.GetApiKey();
-            if(apiKey === null)
-                apiKey ='';
-    
             const loggedUserId = +this.GetIdentity();
             let endpoint = this.BuildAddress(this.SetFriendshipStatusEnd, loggedUserId);
-            console.log(endpoint);
-            const header = new Headers();
-            header.append('Content-Type','application/json');
-            header.append('Authorization',apiKey);
-            const dto : UpdateFriendshipStatusDto = { toUserId:userId, fromUserId : loggedUserId, action: 'Accept' }
            
-
-            return fetch(endpoint,{method:'Put',headers: header, body: JSON.stringify(dto)}).then(res=>
-                {
-                    if(!res.ok){
-                        console.log("Nie udało się zaakceptować zaproszenia");
-                        console.log(res.json());
-                    }
-                })
-
+            const dto : UpdateFriendshipStatusDto = { toUserId:userId, fromUserId : loggedUserId, action: 'Accept' }
+            return this.put(endpoint, dto);
         }
 
         RemoveFriend(userId:number){
-            let apiKey =  this.GetApiKey();
-            if(apiKey === null)
-                apiKey ='';
-    
             const loggedUserId = +this.GetIdentity();
             let endpoint = this.BuildAddress(this.SetFriendshipStatusEnd, loggedUserId);
 
             const dto : UpdateFriendshipStatusDto = {fromUserId:loggedUserId, toUserId: userId, action: 'Delete'};
-            const header = new Headers();
-            header.append('Content-Type','application/json');
-            header.append('Authorization',apiKey);
-            return fetch(endpoint,{method:'Put',headers: header, body: JSON.stringify(dto)}).then(res=>
-                {
-                    if(!res.ok){
-                        console.log("Nie udało się  usunąć znajomości");
-                        console.log(res.json());
-                    }
-                })
+            return this.put(endpoint, dto);
         }
       }
     

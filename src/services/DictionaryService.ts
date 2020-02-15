@@ -7,24 +7,8 @@ class DictionaryService extends ApiQueryService{
     HairColorsEnd = ApiQueryService.ApiEndpoint + '/api/UserDictItems/HairColors';
     EyesColorsEnd = ApiQueryService.ApiEndpoint + '/api/UserDictItems/EyesColors';
 
-    GetDictionaryItems(endpoint:string){
-        let apiKey = this.GetApiKey();
-        if(apiKey === null)
-            apiKey ='';
-
-        const header = new Headers();
-        header.append('Content-Type','application/json');
-        header.append('Authorization',apiKey);
-        return  fetch(endpoint, {
-            method:'GET',
-            headers: header
-        })
-        .then(response =>{
-            return response.json()
-        })
-        .then(resp=>{
-            return resp as DictionaryItemDto[];
-        })
+    GetDictionaryItems(endpoint:string):Promise<DictionaryItemDto[]>{
+        return this.get<DictionaryItemDto[]>(endpoint);
     }
     GetAllInterest = () => {
         return this.GetDictionaryItems(this.InterestsEnd);

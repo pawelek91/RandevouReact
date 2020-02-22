@@ -15,6 +15,12 @@ export interface LastMessageDto {
     sendDate?: Date;
     isRead?: boolean;
   }
+
+  export interface MessageBasicDto{
+    senderId?: number;
+    receiverId?: number;
+    content: string;
+  }
   
   export interface RequestMessagesDto {
     firstUserId: number;

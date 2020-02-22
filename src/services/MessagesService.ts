@@ -1,5 +1,5 @@
 import { ApiQueryService } from "./ApiQueryService";
-import { LastMessageDto, MessageDto, RequestMessagesDto } from "./dto/MessagesDto";
+import { LastMessageDto, MessageDto, MessageBasicDto, RequestMessagesDto } from "./dto/MessagesDto";
 
 export class MessagesService extends ApiQueryService{
     MessagesEndp = ApiQueryService.ApiEndpoint + '/api/Messages';
@@ -23,8 +23,9 @@ export class MessagesService extends ApiQueryService{
     return this.postSpecific<Array<MessageDto>>(endpoint, dto);
   }
 
-  SendMessage(dto: MessageDto) {
-    dto.senderId = +this.GetIdentity();
+  SendMessage(receiverId:number, content:string) {
+    const dto :  MessageBasicDto = {receiverId: receiverId, content: content, senderId: +this.GetIdentity()};
+    console.log(dto);
     const endpoint = this.BuildAddress(this.MessagesEndp);
     return this.post(endpoint, dto);
   }

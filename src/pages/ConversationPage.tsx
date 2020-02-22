@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { ConversationsComponent } from '../components/ConversationsComponent';
 import { MessagesService } from '../services/MessagesService';
 import { MessageDto } from '../services/dto/MessagesDto';
 import { UsersService } from '../services/UsersService';
 import {UserDto} from '../services/dto/UsersDto';
 import {Link} from 'react-router-dom';
+import {SendMessageComponent} from '../components/SendMessageComponent';
 export class ConversationPage extends React.Component{
     constructor(props) {
         super(props);
@@ -61,6 +61,9 @@ export class ConversationPage extends React.Component{
                 <h3>
                 conversation with <Link to={linkToUser}> {speaker.displayName}</Link>
                 </h3>
+
+                <SendMessageComponent userId={speaker.id ?? 0} />
+
                 {messages}
             </div>
         )

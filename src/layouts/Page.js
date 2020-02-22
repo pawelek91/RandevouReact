@@ -6,6 +6,8 @@ import MessagesPage from '../pages/MessagesPage';
 import SearchPage from '../pages/SearchPage';
 import LoginPage from '../pages/LoginPage'
 import UserDetailsPage from '../pages/UserDetailsPage';
+import ConversationPage from '../pages/ConversationPage';
+
 const Page = () => {
     return(
         <>
@@ -16,6 +18,7 @@ const Page = () => {
             <Route path="/search" exact component={SearchPage}/>
             <Route path="/login" exact component={LoginPage}/>
             <Route path="/user/:id" exact component={UserDetailsPage}/>
+            <Route path="/messages/conversation/:id" exact component={ConversationPage} />
         </Switch>
         </>
     )

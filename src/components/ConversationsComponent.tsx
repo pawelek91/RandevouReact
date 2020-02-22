@@ -8,10 +8,23 @@ export class ConversationsComponent extends React.Component<IConversationsCompon
 
 
     render(){
+        const messageStyle={
+            color:"white",
+            backgroundColor: "violet",
+            padding: "10px",
+            fontFamily: "Arial",
+            margin:"10px",
+
+            a:{
+                color:"red",
+            }
+            
+        };
+
         let convs = this.props.conversations.map(x=>{
             const linkToConversation = `/messages/conversation/${x.speakerId}`;
             return (
-                <div key={x.speakerId}>
+                <div key={x.speakerId} style={messageStyle}>
                 {x.messageDate} | <strong> {x.speakerName}</strong> <br/>
                 {x.messageShortContent} 
                 <hr/>

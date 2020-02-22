@@ -37,11 +37,19 @@ export class ConversationPage extends React.Component{
     userService = new UsersService();
     render(){
         
+        const messageStyle={
+            color:"white",
+            backgroundColor: "DodgerBlue",
+            padding: "10px",
+            fontFamily: "Arial",
+            margin:"10px",
+        };
+
         let speaker = this.state.speaker as UserDto;
         let linkToUser = `/user/${speaker.id}`;
         let messages = this.state.conversation.map(message=>{
             return(
-                <div>
+                <div style={messageStyle} key={message.sendDate?.toString() ?? ''}>
                     <strong> {message.senderName}</strong> | {message.sendDate}  <br/>
                     {message.content}
                 </div>

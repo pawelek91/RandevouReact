@@ -4,6 +4,7 @@ import { UserFullDto } from '../services/dto/UsersDto';
 import InterestDisplayComponent from '../components/InterestsDisplayComponent';
 import { UserComponent } from './UserComponent';
 import { UserFriendshipActionComponent } from './UserFriendshipActionComponent';
+import {DictionaryFieldReadComponent} from './DictionaryFieldReadComponent'
 interface IUserDetailsComponent{
     user: UserFullDto
 }
@@ -35,16 +36,20 @@ export class UserDetailsComponent extends Component<IUserDetailsComponent>{
                     <th>Waga</th>
                     <td>{userDto.details?.heigth}</td>
                 </tr>
-  {/* <tr>
-    <th>Kolor oczu</th>
-    <td>{userEyesColor}</td>
-  </tr>
-  <tr>
-    <th>Kolor włosów</th>
-    <td>{userHairColor}</td>
-  </tr>
-  
-  */}
+
+                <tr>
+                    <td>
+                    <DictionaryFieldReadComponent itemName="kolor oczu" itemId={userDto.details?.eyesColor ?? 0} />
+                    </td>
+                </tr>
+
+                
+                <tr>
+                    <td>
+                    <DictionaryFieldReadComponent itemName="kolor włosów" itemId={userDto.details?.hairColor ?? 0} />
+                    </td>
+                </tr>
+
   <tr>
     <th>Zainteresowania</th>
     <td>

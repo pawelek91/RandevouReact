@@ -9,15 +9,26 @@ class MessagesPage extends React.Component{
 state={
     conversations: new Array<LastMessageDto>(),
 }
+
+lastMessagesIntervalId;
 service = new MessagesService();
 
-componentDidMount(){
+getLastMessage = () =>{
     this.service.GetLastMessages().then(result=>{
         this.setState({
             conversations: result
         })
     })
 }
+componentDidMount(){
+    this.getLastMessage();
+    this.lastMessagesIntervalId = setInterval(this.getLastMessage, 3000);
+}
+
+componentWillUnmount= () => {
+    clearInterval(this.lastMessagesIntervalId);
+}
+
 render(){
     
     const apiKey = this.service.GetApiKey();

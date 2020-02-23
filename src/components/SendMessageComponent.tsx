@@ -13,8 +13,10 @@ export class SendMessageComponent extends React.Component<ISendMessageComponent>
         service = new MessagesService();
 
         sendMessage = () =>{
-            
             this.service.SendMessage(this.props.userId, this.state.message);
+            this.setState({
+                message:'',
+            })
         }
 
         contentChanged= (e) =>{

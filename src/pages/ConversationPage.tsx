@@ -15,24 +15,37 @@ export class ConversationPage extends React.Component{
         }
     }
 
+    conversationIntervalId;
+
     state={
         userId:0,
         conversation: new Array<MessageDto>(),
         speaker: {}
     }
 
-    componentDidMount(){
+    getGonversations = () =>{
         this.service.GetConversation(this.state.userId).then(result=>{
             this.setState({
                 conversation:result
             })
         })
+    }
+
+    componentDidMount(){
+        this.getGonversations();
+        this.conversationIntervalId = setInterval(this.getGonversations, 1000);
+
         this.userService.getUserBasic(this.state.userId).then(result=>{
             this.setState({
                 speaker: result
             })
         })
     }
+
+    componentWillUnmount(){
+        clearInterval(this.conversationIntervalId);
+    }
+
     service = new MessagesService();
     userService = new UsersService();
     render(){

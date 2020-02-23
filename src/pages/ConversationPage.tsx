@@ -23,7 +23,7 @@ export class ConversationPage extends React.Component{
         speaker: {}
     }
 
-    getGonversations = () =>{
+    getGonversation = () =>{
         this.service.GetConversation(this.state.userId).then(result=>{
             this.setState({
                 conversation:result
@@ -32,8 +32,8 @@ export class ConversationPage extends React.Component{
     }
 
     componentDidMount(){
-        this.getGonversations();
-        this.conversationIntervalId = setInterval(this.getGonversations, 1000);
+        this.getGonversation();
+        this.conversationIntervalId = setInterval(this.getGonversation, 1000);
 
         this.userService.getUserBasic(this.state.userId).then(result=>{
             this.setState({

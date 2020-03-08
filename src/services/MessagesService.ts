@@ -18,7 +18,7 @@ export class MessagesService extends ApiQueryService{
 
   GetConversation(speakerId: number): Promise<Array<MessageDto>> {
       
-    const dto :  RequestMessagesDto = {firstUserId: +this.GetIdentity(), secondUserId: speakerId};
+    const dto :  RequestMessagesDto = {firstUserId: +this.GetIdentity(), secondUserId: +speakerId};
     const endpoint = this.BuildAddress(this.WholeConversationEndp, dto.firstUserId);
     return this.postSpecific<Array<MessageDto>>(endpoint, dto);
   }

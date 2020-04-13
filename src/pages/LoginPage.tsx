@@ -5,7 +5,8 @@ import { ApiQueryService } from '../services/ApiQueryService';
 import {connect} from 'react-redux';
 
 interface ILoginProps{
-    dispatch:any
+    dispatch:any,
+    loginProps:any
 }
 class LoginPage extends React.Component<ILoginProps>{
     constructor(props){
@@ -18,7 +19,6 @@ class LoginPage extends React.Component<ILoginProps>{
     state = {
         login: "",
         password:"",
-        apiKey:"",
         authFailed:false,
     }
     
@@ -33,18 +33,8 @@ class LoginPage extends React.Component<ILoginProps>{
                 })
             }
             else{ //logged in
-            localStorage.setItem('RANDEVOU_APIKEY', response);
-            console.log('login:');
-            console.log(response);
-            this.setState({
-                apiKey: response
-            });
 
             authService.GetIdentity(response).then(result=>{
-                console.log("identity");
-                console.log(result);
-                localStorage.setItem('RANDEVOU_IDENTITY',result.toString());
-
                 this.props.dispatch({type:'LOGIN_SUCCESSFUL',
             data:{
                 loggedIn : true,
@@ -58,10 +48,6 @@ class LoginPage extends React.Component<ILoginProps>{
     }
 
     handleLogout = () =>{
-        this.setState({
-            apiKey:""
-        });
-        ApiQueryService.ClearLoginInfos();
         this.props.dispatch({type:'LOGOUT'});
     }
 
@@ -76,7 +62,8 @@ class LoginPage extends React.Component<ILoginProps>{
         const apiKey = this.apiQueryService.GetApiKey();
         const loggedFailedInfo = this.state.authFailed && <p>Nie udało się zalogować</p>;
 
-        if(apiKey !== undefined && apiKey !==null){
+        console.log(this.props);
+        if(this.props.loginProps.loggedIn){
             return(
                 <>
                 <button onClick={this.handleLogout}>Log out</button>
@@ -84,7 +71,6 @@ class LoginPage extends React.Component<ILoginProps>{
             )
         }
         
-        if(this.state.apiKey === "" || this.state.apiKey === undefined || apiKey ===null)
         return (
             <>
             {loggedFailedInfo}

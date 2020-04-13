@@ -1,14 +1,10 @@
-
+import store from '../stores/configureStore'
 
 export class ApiQueryService{
     static ApiEndpoint  = 'http://localhost:7777';
     
     GetIdentity(): string {
-        let identity = localStorage.getItem('RANDEVOU_IDENTITY');
-        if(identity === null || typeof(identity) === undefined) {
-          identity = '';
-         }
-        return identity;
+      return store.getState().loginInfo.identity;
       }
 
       BuildAddress(address: string, id?: number): string {
@@ -21,13 +17,7 @@ export class ApiQueryService{
       }
 
       GetApiKey() {
-        const apiKey = localStorage.getItem('RANDEVOU_APIKEY');
-        return apiKey;
-      }
-
-      static ClearLoginInfos() {
-        localStorage.removeItem('RANDEVOU_IDENTITY');
-        localStorage.removeItem('RANDEVOU_APIKEY');
+        return store.getState().loginInfo.apiKey;
       }
     
 

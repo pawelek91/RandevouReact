@@ -2,7 +2,17 @@ import React from 'react';
 import {ApiAuthDto} from '../services/dto/ApiAuthDto'
 import AuthenticationService from '../services/AuthenticationService';
 import { ApiQueryService } from '../services/ApiQueryService';
-class LoginPage extends React.Component{
+import {connect} from 'react-redux';
+
+interface ILoginProps{
+    dispatch:any
+}
+class LoginPage extends React.Component<ILoginProps>{
+    constructor(props){
+        super(props);
+
+        const {dispatch} = this.props;
+    }
 
     apiQueryService = new ApiQueryService();
     state = {
@@ -34,6 +44,13 @@ class LoginPage extends React.Component{
                 console.log("identity");
                 console.log(result);
                 localStorage.setItem('RANDEVOU_IDENTITY',result.toString());
+
+                this.props.dispatch({type:'LOGIN_SUCCESSFUL',
+            data:{
+                loggedIn : true,
+                identity: result.toString(),
+                apiKey: response,
+            }})
             })
         }
         });
@@ -45,6 +62,7 @@ class LoginPage extends React.Component{
             apiKey:""
         });
         ApiQueryService.ClearLoginInfos();
+        this.props.dispatch({type:'LOGOUT'});
     }
 
     handleFieldChanged = (e : any) =>{
@@ -80,4 +98,8 @@ class LoginPage extends React.Component{
     }
 }
 
-export default LoginPage;
+export default connect((state,props)=>{
+    return{
+        loginProps: state.loginInfo
+    }
+})(LoginPage) ;

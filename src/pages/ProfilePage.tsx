@@ -7,10 +7,10 @@ import DictionaryService from '../services/DictionaryService';
 import { UserDto, UserFullDto, UserDetailsDto } from '../services/dto/UsersDto';
 import { UsersService } from '../services/UsersService';
 import UserProfileComponent from '../components/UserProfileComponent';
-
+import {connect} from 'react-redux';
 
 interface IProfilePageProps{
-
+ loginInfo:any
 }
 
 interface IProfilePageState{
@@ -46,8 +46,11 @@ class ProfilePage extends React.Component<IProfilePageProps, IProfilePageState>{
 
     componentDidMount(){
         this._isMounted=true;
-        this.getLoggedUserData();
-        this.getDictionariesValues();
+        if(this.props.loginInfo.loggedIn){
+            this.getLoggedUserData();
+            this.getDictionariesValues();
+        }
+        
 
     
     }
@@ -242,10 +245,9 @@ class ProfilePage extends React.Component<IProfilePageProps, IProfilePageState>{
     }
 
     render(){
+        console.log('profile page render loginInfo:', this.props.loginInfo);
     
-        const apiKey = this.service.GetApiKey();
-      
-        if(apiKey === undefined || apiKey === null || apiKey===''){
+        if(!this.props.loginInfo.loggedIn){
             return <Redirect to='/login'/>
         }
 
@@ -278,4 +280,8 @@ class ProfilePage extends React.Component<IProfilePageProps, IProfilePageState>{
     }
 }
 
-export default ProfilePage;
+export default connect((state,props)=>{
+    return{
+        loginInfo:state.loginInfo
+    }
+})(ProfilePage)

@@ -8,7 +8,13 @@ import FieldBasicFieldsComponent from '../components/FinderBasicFieldsComponent'
 import { SearchUsersService } from '../services/SearchUsersService';
 import { UserDto } from '../services/dto/UsersDto';
 import SearchResultComponent from '../components/SearchResultComponent';
-class SearchPage extends React.Component{
+import {connect} from 'react-redux';
+
+interface ISearchPageProps{
+    loginInfo:any
+   }
+
+class SearchPage extends React.Component<ISearchPageProps>{
  _isMounted = false;
 state={
     queryDto: new SearchQueryDto(),
@@ -102,7 +108,9 @@ componentWillUnmount(){
     this._isMounted = false;
 }
 componentDidMount(){
+    
     this._isMounted = true;
+    if(this.props.loginInfo.loggedIn){
      this.dictionaryService.GetAllInterest().then(result=>{
         if(this._isMounted)
         this.setState({
@@ -123,7 +131,7 @@ componentDidMount(){
         this.setState({
             hairColors:result
         })
-    })
+    })}
 }
 render(){
          
@@ -134,6 +142,9 @@ render(){
  
     }
 
+    if(!this.props.loginInfo.loggedIn){
+        return <Redirect to='/login'/>
+    }
  
 
     const apiKey = this.searchService.GetApiKey();
@@ -211,4 +222,6 @@ render(){
 
 }
 
-export default SearchPage;
+export default connect((state,props)=>{
+    return {loginInfo:state.loginInfo}
+})(SearchPage);

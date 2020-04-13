@@ -3,8 +3,14 @@ import { Redirect } from 'react-router';
 import { MessagesService } from '../services/MessagesService';
 import { LastMessageDto } from '../services/dto/MessagesDto';
 import { ConversationsComponent } from '../components/ConversationsComponent';
+import {connect} from 'react-redux';
 
-class MessagesPage extends React.Component{
+interface IMessagesPageProps{
+    loginInfo:any
+   }
+
+   
+class MessagesPage extends React.Component<IMessagesPageProps>{
 
 state={
     conversations: new Array<LastMessageDto>(),
@@ -21,8 +27,11 @@ getLastMessage = () =>{
     })
 }
 componentDidMount(){
-    this.getLastMessage();
-    this.lastMessagesIntervalId = setInterval(this.getLastMessage, 3000);
+    if(this.props.loginInfo.loggedIn){
+        this.getLastMessage();
+        this.lastMessagesIntervalId = setInterval(this.getLastMessage, 3000);
+    }
+    
 }
 
 componentWillUnmount= () => {
@@ -31,9 +40,8 @@ componentWillUnmount= () => {
 
 render(){
     
-    const apiKey = this.service.GetApiKey();
   
-    if(apiKey === undefined || apiKey === null || apiKey===''){
+    if(!this.props.loginInfo.loggedIn){
         return <Redirect to='/login'/>
     }
 
@@ -46,4 +54,8 @@ render(){
 
 }
 
-export default MessagesPage;
+export default connect((state,props)=>{
+    return{
+        loginInfo:state.loginInfo
+    }
+})(MessagesPage)

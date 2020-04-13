@@ -4,8 +4,13 @@ import FriendshipService from '../services/FriendshipService';
 import { UsersService } from '../services/UsersService';
 import { FriendComponent } from '../components/FriendComponent';
 import { UserDto } from '../services/dto/UsersDto';
+import {connect} from 'react-redux';
 
-class FriendsPage extends React.Component{
+interface IFriendsPageProps{
+    loginInfo:any
+   }
+
+class FriendsPage extends React.Component<IFriendsPageProps>{
     _isMsounted:boolean = false;
 state={
     friends: new Array<UserDto>(),
@@ -17,8 +22,10 @@ usersService = new UsersService();
 
 componentDidMount(){
     this._isMsounted = true;
-    this.getFriends();
-    this.getInvitations();
+    if(this.props.loginInfo.loggedIn){
+        this.getFriends();
+        this.getInvitations();
+    }
 }
 
 getFriends = () => {
@@ -64,9 +71,7 @@ callBack(action:string){
 }
 
 render(){
-    const apiKey = this.friendsService.GetApiKey();
-  
-    if(apiKey === undefined || apiKey === null || apiKey===''){
+    if(!this.props.loginInfo.loggedIn){
         return <Redirect to='/login'/>
     }
     
@@ -103,4 +108,8 @@ render(){
 
 }
 
-export default FriendsPage;
+export default connect((state,props)=>{
+    return{
+        loginInfo:state.loginInfo
+    }
+})(FriendsPage)
